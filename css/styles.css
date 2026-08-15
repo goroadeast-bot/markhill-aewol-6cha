@@ -97,3 +97,79 @@ a { color: inherit; text-decoration: none; }
     scroll-behavior: auto !important;
   }
 }
+
+.chapter-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(248, 246, 242, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.chapter-nav-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.chapter-nav-brand {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  font-size: 15px;
+}
+.chapter-nav-list {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  overflow-x: auto;
+}
+.chapter-nav-list button {
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 6px 0;
+  white-space: nowrap;
+}
+.chapter-nav-list button[aria-current="true"] { color: var(--accent); }
+.chapter-nav-cta { padding: 10px 18px; font-size: 14px; white-space: nowrap; }
+
+main#chapterHost { padding-top: 60px; }
+
+.chapter { min-height: calc(100vh - 60px); padding: 64px 0; }
+.chapter[hidden] { display: none; }
+
+.chapter.is-entering { animation: chapterFadeIn 0.45s ease both; }
+@keyframes chapterFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.phone-modal { position: fixed; inset: 0; z-index: 200; display: none; }
+.phone-modal[aria-hidden="false"] { display: block; }
+.phone-modal-backdrop { position: absolute; inset: 0; background: rgba(26, 24, 21, 0.6); }
+.phone-modal-panel {
+  position: relative;
+  max-width: 360px;
+  margin: 15vh auto 0;
+  background: var(--dark-surface);
+  color: var(--on-dark);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+}
+.phone-modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; color: var(--on-dark);
+  font-size: 20px; cursor: pointer;
+}
+.phone-modal-word { font-family: var(--font-display); font-weight: 900; font-size: 20px; margin: 8px 0; }
+.phone-modal-number { display: block; font-size: 28px; font-weight: 700; color: var(--accent); margin: 12px 0; }
+.phone-modal-hint { color: var(--on-dark-muted); font-size: 13px; margin-bottom: 20px; }
