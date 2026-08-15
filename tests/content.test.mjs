@@ -40,3 +40,14 @@ test('the only phone number on the page is 010-9347-1345', () => {
   }
   assert.ok(phoneMatches.length > 0, 'expected at least one phone number on the page');
 });
+
+test('hero chapter shows the real 6cha headline facts', () => {
+  assert.ok(html.includes('마크힐애월6차'));
+  assert.ok(html.includes('하귀2리'));
+  assert.ok(html.includes('20세대'));
+  assert.ok(html.includes('아승공인중개사'));
+  // The hero background photo is applied via CSS (background-image), not an
+  // <img> tag, so its path lives in styles.css rather than index.html.
+  const css = readFileSync('css/styles.css', 'utf8');
+  assert.ok(css.includes('images/hero-living-3cha.jpg'));
+});
