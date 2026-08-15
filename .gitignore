@@ -1,0 +1,11 @@
+# Raw source material (2GB+ of unedited photos / draft docx) — not part of the deployed site.
+# Task 1 of the implementation plan copies the specific curated files into images/, which IS tracked.
+markhill_image/
+markhill_blog/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+
+# Worktrees created for isolated task execution
+.worktrees/
