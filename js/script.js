@@ -17,6 +17,7 @@ function showChapter(requestedId) {
   for (const btn of navButtons) {
     btn.setAttribute('aria-current', btn.dataset.navTarget === id ? 'true' : 'false');
   }
+  window.scrollTo({ top: 0, behavior: 'instant' });
   window.location.hash = id;
 }
 
@@ -43,8 +44,11 @@ document.addEventListener('click', (e) => {
   }
 });
 
+const phoneModalNumber = document.querySelector('.phone-modal-number');
+
 phoneCopyBtn?.addEventListener('click', async () => {
-  await navigator.clipboard.writeText('010-9347-1345');
+  const phoneNumber = phoneModalNumber?.textContent.trim() ?? '';
+  await navigator.clipboard.writeText(phoneNumber);
   phoneCopyBtn.textContent = '복사되었습니다';
   setTimeout(() => { phoneCopyBtn.textContent = '번호 복사하기'; }, 2000);
 });
