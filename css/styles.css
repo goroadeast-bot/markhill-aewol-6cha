@@ -368,3 +368,18 @@ main#chapterHost { padding-top: 60px; }
 .gallery-row img:hover { transform: scale(1.02); }
 .gallery-group-current .gallery-row { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .gallery-note { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }
+
+.chapter-dark { background: var(--dark-surface); color: var(--on-dark); }
+.contact-block { text-align: center; padding: 40px 0; }
+.contact-card {
+  margin: 32px auto 0;
+  max-width: 420px;
+  padding: 32px;
+  border: 1px solid rgba(248,246,242,0.15);
+  border-radius: 16px;
+}
+.contact-name { font-family: var(--font-display); font-weight: 900; font-size: 22px; margin-bottom: 8px; }
+.contact-detail { color: var(--on-dark-muted); font-size: 14px; margin-bottom: 20px; }
+.site-footer { background: var(--dark-surface); color: var(--on-dark-muted); padding: 40px 0; font-size: 13px; }
+.footer-grid { display: grid; gap: 8px; }
+.footer-word { font-family: var(--font-display); font-weight: 900; font-size: 18px; color: var(--on-dark); }

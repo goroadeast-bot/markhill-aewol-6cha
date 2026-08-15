@@ -97,3 +97,11 @@ test('gallery chapter groups photos by phase and labels 5cha as a prior build', 
   }
   assert.ok(html.includes('착공 전으로 실제 인테리어 사진이 아직 없습니다'));
 });
+
+test('contact chapter and footer only ever route to Aseung realty', () => {
+  assert.ok(html.includes('아승공인중개사'));
+  assert.ok(html.includes('안현정'));
+  assert.ok(html.includes('50110-2019-00164'));
+  assert.ok(!html.toLowerCase().includes('후기'));
+  assert.ok(!html.includes('<form'));
+});
