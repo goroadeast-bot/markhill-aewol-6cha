@@ -356,3 +356,15 @@ main#chapterHost { padding-top: 60px; }
 }
 .location-block { padding: 20px 0; border-top: 2px solid var(--accent); }
 .location-photo { width: 100%; border-radius: 12px; border: 1px solid var(--border); margin-top: 16px; }
+
+.gallery-group { margin: 40px 0; }
+.gallery-group-label { color: var(--accent-ink); margin-bottom: 12px; }
+.gallery-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.gallery-row img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; transition: transform 0.25s ease; }
+.gallery-row img:hover { transform: scale(1.02); }
+.gallery-group-current .gallery-row { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.gallery-note { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }

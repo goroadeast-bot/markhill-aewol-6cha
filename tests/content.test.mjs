@@ -90,3 +90,10 @@ test('location chapter states the real education/living/view facts', () => {
   assert.ok(html.includes('귀일중학교'));
   assert.ok(html.includes('images/6cha-location.jpg'));
 });
+
+test('gallery chapter groups photos by phase and labels 5cha as a prior build', () => {
+  for (const phase of ['1차', '2차', '3차', '4차', '5차']) {
+    assert.ok(html.includes(`${phase} ·`), `missing gallery group label for ${phase}`);
+  }
+  assert.ok(html.includes('착공 전으로 실제 인테리어 사진이 아직 없습니다'));
+});
