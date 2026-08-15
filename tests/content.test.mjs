@@ -27,8 +27,9 @@ test('all curated site photos exist in images/', () => {
 
 const html = readFileSync('index.html', 'utf8');
 
-test('every chapter nav target matches a real chapter section', () => {
-  const navTargets = [...html.matchAll(/data-nav-target="([^"]+)"/g)].map((m) => m[1]);
+test('every fixed-nav target matches a real chapter section', () => {
+  const navBlock = html.match(/<nav class="chapter-nav"[\s\S]*?<\/nav>/)[0];
+  const navTargets = [...navBlock.matchAll(/data-nav-target="([^"]+)"/g)].map((m) => m[1]);
   const chapterIds = [...html.matchAll(/data-chapter="([^"]+)"/g)].map((m) => m[1]);
   assert.deepEqual(navTargets, chapterIds);
 });
@@ -50,4 +51,13 @@ test('hero chapter shows the real 6cha headline facts', () => {
   // <img> tag, so its path lives in styles.css rather than index.html.
   const css = readFileSync('css/styles.css', 'utf8');
   assert.ok(css.includes('images/hero-living-3cha.jpg'));
+});
+
+test('history chapter covers all 6 phases with real facts', () => {
+  assert.ok(html.includes('18세대(3개동)'));
+  assert.ok(html.includes('23세대(4개동)'));
+  assert.ok(html.includes('제주사회복지공동모금회'));
+  assert.ok(html.includes('보이드 구조'));
+  assert.ok(html.includes('2025.7.17'));
+  assert.ok(html.includes('옥탑 선셋라운지'));
 });
