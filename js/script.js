@@ -48,3 +48,25 @@ phoneCopyBtn?.addEventListener('click', async () => {
   phoneCopyBtn.textContent = '복사되었습니다';
   setTimeout(() => { phoneCopyBtn.textContent = '번호 복사하기'; }, 2000);
 });
+
+// Scroll-triggered stagger reveal
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    }
+  },
+  { threshold: 0.15 }
+);
+
+function observeReveals(root) {
+  root.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${Math.min(i % 6, 5) * 60}ms`;
+    revealObserver.observe(el);
+  });
+}
+
+observeReveals(document);
