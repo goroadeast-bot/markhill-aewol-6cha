@@ -85,6 +85,31 @@ test('types & pricing chapter carries the exact official figures and disclaimer'
   assert.ok(html.includes('변동될 수 있습니다'));
 });
 
+test('price table rows carry the exact 동/층/가격/조망 combination together, not just anywhere on the page', () => {
+  const priceTableBlock = html.match(/<table class="price-table">[\s\S]*?<\/table>/)[0];
+  const rows = [...priceTableBlock.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map((m) => m[0]);
+
+  const expectedRows = [
+    { dong: '101동', floor: '1층', price: '45,800', view: '자연뷰(간섭없음)/한라산뷰(일부간섭)' },
+    { dong: '101동', floor: '4층', price: '51,300', view: '자연뷰(간섭없음)/한라산뷰(일부간섭)' },
+    { dong: '102동', floor: '1층', price: '44,800', view: '오션뷰(일부간섭)' },
+    { dong: '102동', floor: '4층', price: '51,300', view: '오션뷰(간섭없음)' },
+  ];
+
+  for (const expected of expectedRows) {
+    const matchingRow = rows.find((row) =>
+      row.includes(`<td>${expected.dong}</td>`) &&
+      row.includes(`>${expected.floor}</td>`) &&
+      row.includes(`>${expected.price}</td>`) &&
+      row.includes(expected.view)
+    );
+    assert.ok(
+      matchingRow,
+      `expected a price-table row with ${expected.dong}/${expected.floor}/${expected.price}/${expected.view} all together`
+    );
+  }
+});
+
 test('location chapter states the real education/living/view facts', () => {
   assert.ok(html.includes('하귀초등학교'));
   assert.ok(html.includes('귀일중학교'));
