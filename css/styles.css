@@ -347,3 +347,12 @@ main#chapterHost { padding-top: 60px; }
 }
 .price-disclaimer { font-size: 13px; color: var(--ink-subtle); margin-bottom: 32px; }
 .terms-block { display: grid; gap: 8px; font-size: 15px; }
+
+.location-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 32px 0;
+}
+.location-block { padding: 20px 0; border-top: 2px solid var(--accent); }
+.location-photo { width: 100%; border-radius: 12px; border: 1px solid var(--border); margin-top: 16px; }

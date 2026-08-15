@@ -84,3 +84,9 @@ test('types & pricing chapter carries the exact official figures and disclaimer'
   assert.ok(html.includes('2026.06.22 기준'));
   assert.ok(html.includes('변동될 수 있습니다'));
 });
+
+test('location chapter states the real education/living/view facts', () => {
+  assert.ok(html.includes('하귀초등학교'));
+  assert.ok(html.includes('귀일중학교'));
+  assert.ok(html.includes('images/6cha-location.jpg'));
+});
