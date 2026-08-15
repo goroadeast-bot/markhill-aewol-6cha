@@ -325,3 +325,6 @@ main#chapterHost { padding-top: 60px; }
   background: linear-gradient(to top, rgba(31,27,23,0.9), transparent);
   color: var(--on-dark);
 }
+.signature-moment figcaption .section-lede {
+  color: var(--on-dark-muted);
+}
