@@ -69,3 +69,10 @@ test('overview chapter states the official project facts', () => {
   assert.ok(html.includes('2027년 7월 입주 예정'));
   assert.ok(html.includes('images/6cha-siteplan.jpg'));
 });
+
+test('premium chapter lists real 6cha amenities', () => {
+  assert.ok(html.includes('2.93kw'));
+  assert.ok(html.includes('선셋라운지'));
+  assert.ok(html.includes('마크힐센터'));
+  assert.ok(html.includes('images/6cha-rooftop.jpg'));
+});
