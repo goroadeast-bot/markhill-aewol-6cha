@@ -328,3 +328,22 @@ main#chapterHost { padding-top: 60px; }
 .signature-moment figcaption .section-lede {
   color: var(--on-dark-muted);
 }
+.area-table, .price-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 14px;
+}
+.area-table th, .price-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--bg-alt);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+.area-table td, .price-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.price-disclaimer { font-size: 13px; color: var(--ink-subtle); margin-bottom: 32px; }
+.terms-block { display: grid; gap: 8px; font-size: 15px; }

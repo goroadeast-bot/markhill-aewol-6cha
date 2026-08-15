@@ -76,3 +76,11 @@ test('premium chapter lists real 6cha amenities', () => {
   assert.ok(html.includes('마크힐센터'));
   assert.ok(html.includes('images/6cha-rooftop.jpg'));
 });
+
+test('types & pricing chapter carries the exact official figures and disclaimer', () => {
+  assert.ok(html.includes('45,800'));
+  assert.ok(html.includes('51,300'));
+  assert.ok(html.includes('오션뷰(간섭없음)'));
+  assert.ok(html.includes('2026.06.22 기준'));
+  assert.ok(html.includes('변동될 수 있습니다'));
+});
