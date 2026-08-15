@@ -286,3 +286,15 @@ main#chapterHost { padding-top: 60px; }
 }
 .timeline-card-current .timeline-tag { color: var(--accent); }
 .timeline-card-current .btn { align-self: flex-start; margin-top: 8px; }
+
+.spec-table { width: 100%; border-collapse: collapse; margin: 32px 0; }
+.spec-table th, .spec-table td {
+  text-align: left;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.spec-table th { width: 160px; color: var(--ink-subtle); font-weight: 600; font-size: 14px; }
+.spec-table td { font-size: 15px; }
+.siteplan-block img { border-radius: 12px; border: 1px solid var(--border); }
+.siteplan-caption { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }

@@ -61,3 +61,11 @@ test('history chapter covers all 6 phases with real facts', () => {
   assert.ok(html.includes('2025.7.17'));
   assert.ok(html.includes('옥탑 선셋라운지'));
 });
+
+test('overview chapter states the official project facts', () => {
+  assert.ok(html.includes('하귀2리 2089번지'));
+  assert.ok(html.includes('84타입 20세대'));
+  assert.ok(html.includes('2026년 10월 샘플하우스 오픈'));
+  assert.ok(html.includes('2027년 7월 입주 예정'));
+  assert.ok(html.includes('images/6cha-siteplan.jpg'));
+});
