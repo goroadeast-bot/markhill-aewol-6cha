@@ -27,11 +27,31 @@ test('all curated site photos exist in images/', () => {
 
 const html = readFileSync('index.html', 'utf8');
 
-test('every fixed-nav target matches a real chapter section', () => {
-  const navBlock = html.match(/<nav class="chapter-nav"[\s\S]*?<\/nav>/)[0];
-  const navTargets = [...navBlock.matchAll(/data-nav-target="([^"]+)"/g)].map((m) => m[1]);
-  const chapterIds = [...html.matchAll(/data-chapter="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(navTargets, chapterIds);
+test('the six non-hero sections use id, not the old data-chapter router attribute', () => {
+  for (const id of ['overview', 'location', 'types', 'premium', 'history', 'gallery', 'contact']) {
+    assert.ok(html.includes(`id="${id}"`), `expected id="${id}"`);
+  }
+  // The hero section hasn't been rebuilt yet in this task — it still carries
+  // data-chapter="intro" until Task 3 replaces it.
+  const dataChapterMatches = [...html.matchAll(/data-chapter="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(dataChapterMatches, ['intro']);
+});
+
+test('the 애월6차분양 subsections appear in the order 개요→입지→타입&가격→프리미엄, wrapped in #sale', () => {
+  const saleGroupMatch = html.match(/<div class="sale-group" id="sale">([\s\S]*?)<\/div>\s*\n\s*<section/);
+  assert.ok(saleGroupMatch, 'expected a <div class="sale-group" id="sale"> wrapping the four subsections');
+  const saleGroupInner = saleGroupMatch[1];
+  const idsInGroup = [...saleGroupInner.matchAll(/<section class="chapter" id="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(idsInGroup, ['overview', 'location', 'types', 'premium']);
+});
+
+test('the history 6cha card links to #overview instead of using the old router attribute', () => {
+  const historyBlock = html.match(/<section class="chapter" id="history"[\s\S]*?<\/section>/)[0];
+  assert.ok(historyBlock.includes('href="#overview"'));
+  assert.ok(!historyBlock.includes('data-nav-target'));
+  // Note: the old 8-button nav still has data-nav-target="overview" at this
+  // point in the plan — it isn't rebuilt until Task 3 — so this assertion is
+  // deliberately scoped to the history section only, not the whole page.
 });
 
 test('the only phone number on the page is 010-9347-1345', () => {
