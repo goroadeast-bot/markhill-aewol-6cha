@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 
 const requiredImages = [
-  'images/hero-living-3cha.jpg',
   'images/history-1cha.jpg',
   'images/history-2cha.jpg',
   'images/history-3cha.jpg',
@@ -17,6 +16,10 @@ const requiredImages = [
   'images/6cha-rooftop.jpg',
   'images/6cha-location.jpg',
   'images/6cha-siteplan.jpg',
+  'images/icon-overview.jpeg',
+  'images/icon-location.jpeg',
+  'images/icon-price.jpeg',
+  'images/icon-premium.jpeg',
 ];
 
 test('all curated site photos exist in images/', () => {
@@ -27,14 +30,52 @@ test('all curated site photos exist in images/', () => {
 
 const html = readFileSync('index.html', 'utf8');
 
-test('the six non-hero sections use id, not the old data-chapter router attribute', () => {
+test('no section uses the old data-chapter router attribute anymore', () => {
   for (const id of ['overview', 'location', 'types', 'premium', 'history', 'gallery', 'contact']) {
     assert.ok(html.includes(`id="${id}"`), `expected id="${id}"`);
   }
-  // The hero section hasn't been rebuilt yet in this task — it still carries
-  // data-chapter="intro" until Task 3 replaces it.
-  const dataChapterMatches = [...html.matchAll(/data-chapter="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(dataChapterMatches, ['intro']);
+  assert.ok(!html.includes('data-chapter='), 'data-chapter should be fully removed');
+  assert.ok(!html.includes('data-nav-target='), 'data-nav-target should be fully removed');
+});
+
+test('the top nav has exactly 4 links pointing to sections that exist exactly once', () => {
+  const navBlock = html.match(/<ul class="chapter-nav-list">[\s\S]*?<\/ul>/)[0];
+  const navTargets = [...navBlock.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(navTargets, ['sale', 'history', 'gallery', 'contact']);
+  for (const id of navTargets) {
+    const idMatches = html.match(new RegExp(`id="${id}"`, 'g')) ?? [];
+    assert.equal(idMatches.length, 1, `expected exactly one element with id="${id}"`);
+  }
+});
+
+test('the hero quick-nav cards point to the 4 real subsections, each existing exactly once', () => {
+  const heroCardsBlock = html.match(/<nav class="hero-cards"[\s\S]*?<\/nav>/)[0];
+  const cardTargets = [...heroCardsBlock.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(cardTargets, ['overview', 'location', 'types', 'premium']);
+  for (const id of cardTargets) {
+    const idMatches = html.match(new RegExp(`id="${id}"`, 'g')) ?? [];
+    assert.equal(idMatches.length, 1, `expected exactly one element with id="${id}"`);
+  }
+});
+
+test('hero section shows the real 6cha facts, the corrected sale price, and no invented tagline', () => {
+  const heroBlock = html.match(/<section class="hero-split"[\s\S]*?<\/section>/)[0];
+  assert.ok(heroBlock.includes('마크힐 애월6차'));
+  assert.ok(heroBlock.includes('분양상담'));
+  assert.ok(heroBlock.includes('하귀2리'));
+  assert.ok(heroBlock.includes('84타입 20세대'));
+  assert.ok(heroBlock.includes('4.48억'));
+  assert.ok(heroBlock.includes('5.13억'));
+  assert.ok(!heroBlock.includes('4.58억'), 'the mockup typo price must not end up in the real page');
+  assert.ok(!heroBlock.includes('서부지역 마지막 마크힐'), 'hero copy must not include the removed tagline');
+  assert.ok(html.includes('서부지역 마지막 마크힐'), 'the phrase must still appear as a documented fact in the history timeline');
+  assert.ok(heroBlock.includes('src="images/history-5cha-penthouse.jpg"'));
+  assert.ok(heroBlock.includes('5차 노형'), 'the reused hero photo must be labeled as a 5cha reference photo, not implied as 6cha');
+});
+
+test('hero consult link and nav CTA both dial the real phone number', () => {
+  assert.ok(html.includes('class="hero-consult-link" href="tel:010-9347-1345"'));
+  assert.ok(html.includes('class="btn btn-accent chapter-nav-cta" href="tel:010-9347-1345"'));
 });
 
 test('the 애월6차분양 subsections appear in the order 개요→입지→타입&가격→프리미엄, wrapped in #sale', () => {
@@ -63,14 +104,10 @@ test('the only phone number on the page is 010-9347-1345', () => {
 });
 
 test('hero chapter shows the real 6cha headline facts', () => {
-  assert.ok(html.includes('마크힐애월6차'));
+  assert.ok(html.includes('마크힐 애월6차'));
   assert.ok(html.includes('하귀2리'));
   assert.ok(html.includes('20세대'));
   assert.ok(html.includes('아승공인중개사'));
-  // The hero background photo is applied via CSS (background-image), not an
-  // <img> tag, so its path lives in styles.css rather than index.html.
-  const css = readFileSync('css/styles.css', 'utf8');
-  assert.ok(css.includes('images/hero-living-3cha.jpg'));
 });
 
 test('history chapter covers all 6 phases with real facts', () => {

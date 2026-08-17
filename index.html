@@ -12,33 +12,68 @@
 </head>
 <body>
 
-<nav class="chapter-nav" aria-label="챕터 이동">
+<nav class="chapter-nav" aria-label="주요 섹션 이동">
   <div class="chapter-nav-inner">
     <span class="chapter-nav-brand">MARKHILL AEWOL</span>
     <ul class="chapter-nav-list">
-      <li><button type="button" data-nav-target="intro">소개</button></li>
-      <li><button type="button" data-nav-target="history">역사</button></li>
-      <li><button type="button" data-nav-target="overview">애월6차</button></li>
-      <li><button type="button" data-nav-target="premium">프리미엄</button></li>
-      <li><button type="button" data-nav-target="types">타입&amp;가격</button></li>
-      <li><button type="button" data-nav-target="location">입지</button></li>
-      <li><button type="button" data-nav-target="gallery">갤러리</button></li>
-      <li><button type="button" data-nav-target="contact">문의</button></li>
+      <li><a href="#sale">애월6차분양</a></li>
+      <li><a href="#history">역사</a></li>
+      <li><a href="#gallery">갤러리</a></li>
+      <li><a href="#contact">문의</a></li>
     </ul>
     <a class="btn btn-accent chapter-nav-cta" href="tel:010-9347-1345">전화 상담</a>
   </div>
 </nav>
 
-<main id="chapterHost">
-  <section class="chapter chapter-hero" data-chapter="intro" aria-labelledby="intro-title">
-    <div class="hero-photo">
-      <span class="hero-badge">서부지역 마지막 마크힐</span>
-      <h1 id="intro-title" class="hero-headline">MARKHILL AEWOL<br>마크힐애월6차</h1>
-      <p class="hero-sub">제주시 애월읍 하귀2리 · 단지형 연립주택 84타입 20세대 · 2027년 7월 입주 예정</p>
-      <div class="hero-ctas">
-        <a href="tel:010-9347-1345" class="btn btn-accent">전화 상담하기</a>
+<main id="pageContent">
+  <section class="hero-split" aria-labelledby="hero-title">
+    <div class="hero-split-top">
+      <div class="hero-photo-panel">
+        <img src="images/history-5cha-penthouse.jpg" alt="마크힐노형(5차) 펜트하우스 주방 — 마크힐의 실제 시공 사례" loading="eager" fetchpriority="high">
+        <span class="hero-photo-tag mono">5차 노형 · 시공 사례</span>
       </div>
-      <p class="hero-agent">분양대행 아승공인중개사 · 010-9347-1345</p>
+      <div class="hero-content-panel">
+        <div class="hero-head-row">
+          <h1 id="hero-title" class="hero-wordmark">마크힐 애월6차<span>분양</span></h1>
+          <a class="hero-consult-link" href="tel:010-9347-1345">분양상담</a>
+        </div>
+        <nav class="hero-cards" aria-label="애월6차분양 바로가기">
+          <a class="hero-card reveal" href="#overview">
+            <div class="hero-card-icon"><img src="images/icon-overview.jpeg" alt="" loading="lazy"></div>
+            <div class="hero-card-text">
+              <div class="hero-card-title">개요</div>
+              <div class="hero-card-sub mono">OVERVIEW</div>
+            </div>
+          </a>
+          <a class="hero-card reveal" href="#location">
+            <div class="hero-card-icon"><img src="images/icon-location.jpeg" alt="" loading="lazy"></div>
+            <div class="hero-card-text">
+              <div class="hero-card-title">입지</div>
+              <div class="hero-card-sub mono">LOCATION</div>
+            </div>
+          </a>
+          <a class="hero-card reveal" href="#types">
+            <div class="hero-card-icon"><img src="images/icon-price.jpeg" alt="" loading="lazy"></div>
+            <div class="hero-card-text">
+              <div class="hero-card-title">타입&amp;가격</div>
+              <div class="hero-card-sub mono">PRICE</div>
+            </div>
+          </a>
+          <a class="hero-card reveal" href="#premium">
+            <div class="hero-card-icon"><img src="images/icon-premium.jpeg" alt="" loading="lazy"></div>
+            <div class="hero-card-text">
+              <div class="hero-card-title">프리미엄</div>
+              <div class="hero-card-sub mono">PREMIUM</div>
+            </div>
+          </a>
+        </nav>
+      </div>
+    </div>
+    <div class="hero-statbar">
+      <div class="hero-stat"><b class="mono">하귀2리</b><span class="mono">제주 애월읍</span></div>
+      <div class="hero-stat"><b class="mono">84타입 20세대</b><span class="mono">+근생 4실</span></div>
+      <div class="hero-stat"><b class="mono">2027.7 입주</b><span class="mono">예정</span></div>
+      <div class="hero-stat"><b class="mono">4.48억~5.13억</b><span class="mono">분양가</span></div>
     </div>
   </section>
   <div class="sale-group" id="sale">
