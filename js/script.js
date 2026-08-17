@@ -1,35 +1,31 @@
-import { CHAPTER_IDS, resolveChapter } from './chapter-router.js';
+import { NAV_ZONES, pickActiveNav } from './scroll-spy.js';
 
-const sections = new Map(
-  Array.from(document.querySelectorAll('[data-chapter]')).map((el) => [el.dataset.chapter, el])
+const navLinks = Array.from(document.querySelectorAll('.chapter-nav-list a[href]'));
+const zoneRatios = new Map(NAV_ZONES.map((zone) => [zone.navTarget, 0]));
+const sectionToZone = new Map(NAV_ZONES.map((zone) => [zone.sectionId, zone.navTarget]));
+
+const zoneObserver = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      const navTarget = sectionToZone.get(entry.target.id);
+      if (!navTarget) continue;
+      zoneRatios.set(navTarget, entry.intersectionRatio);
+    }
+    const visibleZones = [...zoneRatios.entries()]
+      .filter(([, ratio]) => ratio > 0)
+      .map(([navTarget, ratio]) => ({ navTarget, ratio }));
+    const active = pickActiveNav(visibleZones);
+    for (const link of navLinks) {
+      link.setAttribute('aria-current', link.getAttribute('href') === `#${active}` ? 'true' : 'false');
+    }
+  },
+  { rootMargin: '-76px 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
 );
-const navButtons = Array.from(document.querySelectorAll('[data-nav-target]'));
 
-function showChapter(requestedId) {
-  const id = resolveChapter(requestedId);
-  for (const chapterId of CHAPTER_IDS) {
-    const section = sections.get(chapterId);
-    if (!section) continue;
-    const isTarget = chapterId === id;
-    section.hidden = !isTarget;
-    section.classList.toggle('is-entering', isTarget);
-  }
-  for (const btn of navButtons) {
-    btn.setAttribute('aria-current', btn.dataset.navTarget === id ? 'true' : 'false');
-  }
-  window.scrollTo({ top: 0, behavior: 'instant' });
-  window.location.hash = id;
+for (const zone of NAV_ZONES) {
+  const section = document.getElementById(zone.sectionId);
+  if (section) zoneObserver.observe(section);
 }
-
-for (const btn of navButtons) {
-  btn.addEventListener('click', () => showChapter(btn.dataset.navTarget));
-}
-
-window.addEventListener('hashchange', () => {
-  showChapter(window.location.hash.replace('#', ''));
-});
-
-showChapter(window.location.hash.replace('#', '') || CHAPTER_IDS[0]);
 
 // Phone modal
 const phoneModal = document.getElementById('phoneModal');
