@@ -77,6 +77,24 @@ if (scrollTopBtn && heroSection) {
 
 // Phone modal
 const phoneModal = document.getElementById('phoneModal');
+
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+}
+
+const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+if (phoneModal && phoneLinks.length) {
+  phoneLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      if (!isMobileDevice()) {
+        e.preventDefault();
+        phoneModal.setAttribute('aria-hidden', 'false');
+      }
+      // 모바일: 기본 동작(전화 앱 연결)을 그대로 둠
+    });
+  });
+}
+
 const phoneCopyBtn = document.getElementById('phoneCopyBtn');
 
 document.addEventListener('click', (e) => {
