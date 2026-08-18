@@ -90,9 +90,6 @@ test('the history 6cha card links to #overview instead of using the old router a
   const historyBlock = html.match(/<section class="chapter" id="history"[\s\S]*?<\/section>/)[0];
   assert.ok(historyBlock.includes('href="#overview"'));
   assert.ok(!historyBlock.includes('data-nav-target'));
-  // Note: the old 8-button nav still has data-nav-target="overview" at this
-  // point in the plan — it isn't rebuilt until Task 3 — so this assertion is
-  // deliberately scoped to the history section only, not the whole page.
 });
 
 test('the only phone number on the page is 010-9347-1345', () => {
