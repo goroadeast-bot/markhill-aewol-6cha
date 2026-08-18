@@ -72,7 +72,6 @@ test('the hero quick-nav cards point to the 4 real subsections, each existing ex
 test('hero section shows the real 6cha facts, the corrected sale price, and no invented tagline', () => {
   const heroBlock = html.match(/<section class="hero-split"[\s\S]*?<\/section>/)[0];
   assert.ok(heroBlock.includes('마크힐 애월6차'));
-  assert.ok(heroBlock.includes('분양상담'));
   assert.ok(heroBlock.includes('하귀2리'));
   assert.ok(heroBlock.includes('84타입 20세대'));
   assert.ok(heroBlock.includes('4.48억'));
@@ -84,9 +83,12 @@ test('hero section shows the real 6cha facts, the corrected sale price, and no i
   assert.ok(heroBlock.includes('5차 노형'), 'the reused hero photo must be labeled as a 5cha reference photo, not implied as 6cha');
 });
 
-test('hero consult link and nav CTA both dial the real phone number', () => {
-  assert.ok(html.includes('class="hero-consult-link" href="tel:010-9347-1345"'));
-  assert.ok(html.includes('class="btn btn-accent chapter-nav-cta" href="tel:010-9347-1345"'));
+test('nav CTA reads "분양상담" and dials the real phone number; the redundant hero consult button is gone', () => {
+  assert.ok(html.includes('class="btn btn-accent chapter-nav-cta" href="tel:010-9347-1345">분양상담</a>'));
+  assert.ok(!html.includes('hero-consult-link'), 'the duplicate hero consult button should be removed');
+  assert.ok(!html.includes('hero-head-row'), 'the now-single-child wrapper row should be removed');
+  const heroTitleMatches = html.match(/id="hero-title"/g) ?? [];
+  assert.equal(heroTitleMatches.length, 1, 'the hero wordmark heading must still exist exactly once');
 });
 
 test('the 애월6차분양 subsections appear in the order 개요→입지→타입&가격→프리미엄, wrapped in #sale', () => {

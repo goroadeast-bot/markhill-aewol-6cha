@@ -19,6 +19,8 @@
 
 html { scroll-behavior: smooth; }
 
+::-webkit-scrollbar-button { display: none; }
+
 body {
   font-family: var(--font-body);
   background: var(--bg);
@@ -204,20 +206,11 @@ main#pageContent { padding-top: 60px; }
   gap: 20px;
   padding: 40px clamp(24px, 4vw, 56px);
 }
-.hero-head-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .hero-wordmark {
   font-family: var(--font-display); font-weight: 900;
   font-size: clamp(24px, 2.6vw, 32px); line-height: 1.15; letter-spacing: -0.01em;
 }
 .hero-wordmark span { display: block; color: var(--accent); }
-.hero-consult-link {
-  display: inline-flex; align-items: center;
-  background: var(--dark-surface); color: var(--on-dark);
-  font-size: 12px; font-weight: 700;
-  padding: 8px 14px; border-radius: 999px;
-  white-space: nowrap; flex-shrink: 0;
-}
-.hero-consult-link:hover { background: var(--ink); }
 
 .hero-cards { display: flex; flex-direction: column; gap: 10px; }
 .hero-card {
