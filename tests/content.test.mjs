@@ -48,6 +48,17 @@ test('the top nav has exactly 4 links pointing to sections that exist exactly on
   }
 });
 
+test('scroll-to-hero button exists, links to the real hero heading, and has an accessible label', () => {
+  assert.ok(html.includes('id="scrollTopBtn"'), 'expected id="scrollTopBtn"');
+  assert.ok(html.includes('class="scroll-top-btn"'), 'expected class="scroll-top-btn"');
+  const btnBlock = html.match(/<a[^>]*id="scrollTopBtn"[^>]*>/)?.[0];
+  assert.ok(btnBlock, 'expected a single <a> tag carrying id="scrollTopBtn"');
+  assert.ok(btnBlock.includes('href="#hero-title"'), 'button must link to #hero-title');
+  assert.ok(btnBlock.includes('aria-label="맨 위로 이동"'), 'button must have an accessible label');
+  const heroTitleMatches = html.match(/id="hero-title"/g) ?? [];
+  assert.equal(heroTitleMatches.length, 1, 'expected exactly one element with id="hero-title"');
+});
+
 test('the hero quick-nav cards point to the 4 real subsections, each existing exactly once', () => {
   const heroCardsBlock = html.match(/<nav class="hero-cards"[\s\S]*?<\/nav>/)[0];
   const cardTargets = [...heroCardsBlock.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
