@@ -59,6 +59,22 @@ window.addEventListener(
   { passive: true }
 );
 
+// Scroll-to-hero floating button
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+const heroSection = document.querySelector('.hero-split');
+
+if (scrollTopBtn && heroSection) {
+  const heroVisibilityObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        scrollTopBtn.classList.toggle('is-visible', !entry.isIntersecting);
+      }
+    },
+    { threshold: 0 }
+  );
+  heroVisibilityObserver.observe(heroSection);
+}
+
 // Phone modal
 const phoneModal = document.getElementById('phoneModal');
 const phoneCopyBtn = document.getElementById('phoneCopyBtn');
