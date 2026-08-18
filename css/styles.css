@@ -257,7 +257,7 @@ main#pageContent { padding-top: 60px; }
 }
 .spec-table th { width: 160px; color: var(--ink-subtle); font-weight: 600; font-size: 14px; }
 .spec-table td { font-size: 15px; }
-.siteplan-block img { border-radius: 12px; border: 1px solid var(--border); }
+.siteplan-block img { border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 1600 / 1131; object-fit: cover; }
 .siteplan-caption { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }
 
 .feature-grid {
@@ -278,7 +278,7 @@ main#pageContent { padding-top: 60px; }
   border-radius: 16px;
   overflow: hidden;
 }
-.signature-moment img { width: 100%; }
+.signature-moment img { width: 100%; aspect-ratio: 1221 / 864; object-fit: cover; }
 .signature-moment figcaption {
   position: absolute;
   left: 0; bottom: 0; right: 0;
@@ -316,7 +316,7 @@ main#pageContent { padding-top: 60px; }
   margin: 32px 0;
 }
 .location-block { padding: 20px 0; border-top: 2px solid var(--accent); }
-.location-photo { width: 100%; border-radius: 12px; border: 1px solid var(--border); margin-top: 16px; }
+.location-photo { width: 100%; border-radius: 12px; border: 1px solid var(--border); margin-top: 16px; aspect-ratio: 1376 / 768; object-fit: cover; }
 
 .gallery-group { margin: 40px 0; }
 .gallery-group-label { color: var(--accent-ink); margin-bottom: 12px; }
