@@ -208,10 +208,25 @@ main#pageContent { padding-top: 60px; }
   padding: 7px 14px; border-radius: 999px;
 }
 .hero-content-panel {
+  position: relative;
+  overflow: hidden;
   width: 42%;
   display: flex; flex-direction: column; justify-content: center;
   gap: 20px;
   padding: 40px clamp(24px, 4vw, 56px);
+}
+.hero-content-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url('../images/history-5cha-penthouse.jpg');
+  background-size: 213% 333%;
+  background-position: 72% 79%;
+  filter: blur(14px) saturate(1.1);
+  opacity: 0.6;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 55%, black 82%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 55%, black 82%, black 100%);
 }
 .hero-wordmark {
   font-family: var(--font-display); font-weight: 900;
