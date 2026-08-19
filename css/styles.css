@@ -219,17 +219,10 @@ main#pageContent { padding-top: 60px; }
 }
 .hero-wordmark span { display: block; color: var(--accent); }
 
-.hero-cards {
-  display: flex; flex-direction: column; gap: 10px;
-  background-image: url('../images/hero-card-photo.jpg');
-  background-size: cover;
-  background-position: center;
-  border-radius: 12px;
-}
+.hero-cards { display: flex; flex-direction: column; gap: 10px; }
 .hero-card {
   display: flex; align-items: center; gap: 12px;
-  background: linear-gradient(to right, #fff 0%, #fff 40%, rgba(255,255,255,0.5) 72%, rgba(255,255,255,0) 100%);
-  border: 1px solid var(--border); border-radius: 12px;
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
   padding: 12px 14px;
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }

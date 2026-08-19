@@ -20,7 +20,6 @@ const requiredImages = [
   'images/icon-location.jpeg',
   'images/icon-price.jpeg',
   'images/icon-premium.jpeg',
-  'images/hero-card-photo.jpg',
 ];
 
 test('all curated site photos exist in images/', () => {
