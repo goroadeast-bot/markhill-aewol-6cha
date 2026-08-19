@@ -199,7 +199,7 @@ main#pageContent { padding-top: 60px; }
 .scroll-top-btn:hover { background: var(--ink); }
 
 .hero-split-top { display: flex; min-height: 540px; }
-.hero-photo-panel { position: relative; width: 65%; flex-shrink: 0; overflow: hidden; }
+.hero-photo-panel { position: relative; width: 58%; flex-shrink: 0; overflow: hidden; }
 .hero-photo-panel img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .hero-photo-tag {
   position: absolute; left: 20px; bottom: 20px;
@@ -208,7 +208,7 @@ main#pageContent { padding-top: 60px; }
   padding: 7px 14px; border-radius: 999px;
 }
 .hero-content-panel {
-  width: 35%;
+  width: 42%;
   display: flex; flex-direction: column; justify-content: center;
   gap: 20px;
   padding: 40px clamp(24px, 4vw, 56px);
