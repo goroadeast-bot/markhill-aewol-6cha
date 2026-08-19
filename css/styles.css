@@ -17,14 +17,8 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
-
-::-webkit-scrollbar { width: 12px; height: 12px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: var(--ink-subtle); }
-::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
-::-webkit-scrollbar-corner { background: transparent; }
+html { scroll-behavior: smooth; scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
 
 body {
   font-family: var(--font-body);
