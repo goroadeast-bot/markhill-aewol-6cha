@@ -220,7 +220,7 @@ main#pageContent { padding-top: 60px; }
 .hero-cards { display: flex; flex-direction: column; gap: 10px; }
 .hero-card {
   display: flex; align-items: center; gap: 12px;
-  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
   padding: 12px 14px;
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
