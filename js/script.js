@@ -75,6 +75,34 @@ if (scrollTopBtn && heroSection) {
   heroVisibilityObserver.observe(heroSection);
 }
 
+// Hero copy + card entrance animation
+const heroCopy = document.querySelector('.hero-copy');
+const heroCardEls = Array.from(document.querySelectorAll('.hero-card'));
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function splitIntoWords(el, className) {
+  const words = el.textContent.trim().split(/\s+/);
+  el.innerHTML = words.map((word, i) => `<span class="${className}" style="--i:${i}">${word}</span>`).join(' ');
+}
+
+if (heroCopy && heroCardEls.length) {
+  heroCardEls.forEach((card) => {
+    const desc = card.querySelector('.hero-card-desc');
+    if (desc) splitIntoWords(desc, 'hero-card-word');
+  });
+
+  if (reduceMotion) {
+    heroCopy.classList.add('is-visible');
+    heroCardEls.forEach((card) => card.classList.add('is-revealed'));
+  } else {
+    requestAnimationFrame(() => heroCopy.classList.add('is-visible'));
+    const copyDoneAt = 1240;
+    heroCardEls.forEach((card, i) => {
+      setTimeout(() => card.classList.add('is-revealed'), copyDoneAt + i * 220);
+    });
+  }
+}
+
 // Phone modal
 const phoneModal = document.getElementById('phoneModal');
 
