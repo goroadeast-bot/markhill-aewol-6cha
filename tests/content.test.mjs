@@ -197,3 +197,33 @@ test('contact chapter and footer only ever route to Aseung realty', () => {
   assert.ok(!html.toLowerCase().includes('후기'));
   assert.ok(!html.includes('<form'));
 });
+
+test('hero copy tells the real brand story and never repeats the banned tagline', () => {
+  const heroBlock = html.match(/<section class="hero-split"[\s\S]*?<\/section>/)[0];
+  const copyBlock = heroBlock.match(/<p class="hero-copy">[\s\S]*?<\/p>/)?.[0];
+  assert.ok(copyBlock, 'expected a <p class="hero-copy"> block in the hero');
+  for (const word of ['2020년', '애월에서', '시작해', '여섯', '번째,', '다시', '애월로.', '남건종합건설이', '짓고', '아승공인중개사가', '함께합니다.']) {
+    assert.ok(copyBlock.includes(word), `expected copy to include "${word}"`);
+  }
+  const wordSpans = [...copyBlock.matchAll(/class="hero-copy-word"/g)];
+  assert.equal(wordSpans.length, 11, 'expected exactly 11 hero-copy-word spans');
+  assert.ok(!heroBlock.includes('서부지역 마지막 마크힐'), 'the banned tagline must not appear in the hero copy');
+});
+
+test('each hero card carries a one-line description grounded in real facts, plus an arrow', () => {
+  const heroCardsBlock = html.match(/<nav class="hero-cards"[\s\S]*?<\/nav>/)[0];
+  const cardBlocks = [...heroCardsBlock.matchAll(/<a class="hero-card reveal"[\s\S]*?<\/a>/g)].map((m) => m[0]);
+  assert.equal(cardBlocks.length, 4, 'expected exactly 4 hero cards');
+
+  const expectedDescriptions = [
+    '84타입 20세대 · 근생 4실',
+    '하귀초·귀일중 도보 통학',
+    '4.48억~5.13억',
+    '전세대 태양광 · 선셋라운지',
+  ];
+  cardBlocks.forEach((block, i) => {
+    assert.ok(block.includes(`class="hero-card-desc"`), `card ${i} must have a hero-card-desc`);
+    assert.ok(block.includes(expectedDescriptions[i]), `card ${i} must include "${expectedDescriptions[i]}"`);
+    assert.ok(block.includes('class="hero-card-arrow"') && block.includes('›'), `card ${i} must have a hero-card-arrow with ›`);
+  });
+});

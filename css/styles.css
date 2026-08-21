@@ -217,6 +217,22 @@ main#pageContent { padding-top: 60px; }
 }
 .hero-wordmark span { display: block; color: var(--accent); }
 
+.hero-head { display: flex; align-items: center; gap: 16px; }
+.hero-copy {
+  position: relative;
+  padding-left: 14px;
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--ink-muted);
+}
+.hero-copy strong { color: var(--ink); font-weight: 700; }
+.hero-copy::before {
+  content: '';
+  position: absolute; left: 0; top: 0;
+  width: 2px; height: 100%;
+  background: var(--accent);
+}
+
 .hero-cards { display: flex; flex-direction: column; gap: 10px; }
 .hero-card {
   display: flex; align-items: center; gap: 12px;
@@ -230,6 +246,8 @@ main#pageContent { padding-top: 60px; }
 .hero-card-text { display: flex; flex-direction: column; }
 .hero-card-title { font-weight: 700; font-size: 15px; }
 .hero-card-sub { font-size: 10px; color: var(--ink-subtle); letter-spacing: 0.06em; }
+.hero-card-desc { flex: 1; font-size: 11px; color: var(--ink-muted); padding-left: 13px; border-left: 1px solid var(--border); }
+.hero-card-arrow { color: var(--accent); font-size: 16px; flex-shrink: 0; }
 
 .hero-statbar { display: flex; background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .hero-stat { flex: 1; text-align: center; padding: 18px 8px; border-right: 1px solid var(--border); }
