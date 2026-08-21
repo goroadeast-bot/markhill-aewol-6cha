@@ -454,6 +454,8 @@ main#pageContent { padding-top: 60px; }
   .hero-split-top { flex-direction: column; min-height: 0; }
   .hero-photo-panel { width: 100%; aspect-ratio: 4 / 3; }
   .hero-content-panel { width: 100%; padding: 28px 20px; }
+  .hero-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .hero-card-desc { font-size: 10px; }
   .hero-statbar { flex-wrap: wrap; }
   .hero-stat { width: 50%; flex: 0 0 50%; border-bottom: 1px solid var(--border); }
   .hero-stat:nth-child(2n) { border-right: none; }
