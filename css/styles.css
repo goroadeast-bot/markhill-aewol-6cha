@@ -369,14 +369,14 @@ main#pageContent { padding-top: 60px; }
 .siteplan-scaler { transform-origin: center center; will-change: transform; }
 .overview-intro > .eyebrow,
 .overview-intro > .section-title,
-.overview-intro > .spec-table {
+.spec-row {
   opacity: 0;
   transform: translateY(14px);
   filter: blur(5px);
 }
 .overview-intro.is-visible > .eyebrow,
 .overview-intro.is-visible > .section-title,
-.overview-intro.is-visible > .spec-table {
+.overview-intro.is-visible .spec-row {
   opacity: 1; transform: none; filter: blur(0);
   transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1),
               transform 0.7s cubic-bezier(0.23, 1, 0.32, 1),
@@ -385,7 +385,7 @@ main#pageContent { padding-top: 60px; }
 @media (prefers-reduced-motion: reduce) {
   .overview-intro > .eyebrow,
   .overview-intro > .section-title,
-  .overview-intro > .spec-table {
+  .spec-row {
     opacity: 1; transform: none; filter: none;
   }
   .siteplan-scaler { transform: none !important; }
