@@ -117,6 +117,20 @@ if (overviewIntro) {
   introObserver.observe(overviewIntro);
 }
 
+// Location rows + map — same repeat-reveal pattern as the overview intro group
+const locationReveals = Array.from(document.querySelectorAll('.location-row, .location-map'));
+if (locationReveals.length) {
+  const locationObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.2 }
+  );
+  locationReveals.forEach((el) => locationObserver.observe(el));
+}
+
 // Siteplan scroll-linked scale (0.78 at bottom of viewport → 1.00 when centered) + caption trigger
 const siteplanScaler = document.querySelector('.siteplan-scaler');
 const siteplanCaption = document.querySelector('.siteplan-caption');
