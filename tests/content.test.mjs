@@ -20,6 +20,12 @@ const requiredImages = [
   'images/icon-location.jpeg',
   'images/icon-price.jpeg',
   'images/icon-premium.jpeg',
+  'images/location-edu-1.jpg',
+  'images/location-edu-2.jpg',
+  'images/location-life-1.jpg',
+  'images/location-life-2.jpg',
+  'images/location-view-1.jpg',
+  'images/location-view-2.jpg',
 ];
 
 test('all curated site photos exist in images/', () => {
@@ -177,10 +183,37 @@ test('price table rows carry the exact 동/층/가격/조망 combination togethe
   }
 });
 
-test('location chapter states the real education/living/view facts', () => {
-  assert.ok(html.includes('하귀초등학교'));
-  assert.ok(html.includes('귀일중학교'));
-  assert.ok(html.includes('images/6cha-location.jpg'));
+test('location chapter states the real education/living/view facts with full detail lists, a map, and 6 real photos', () => {
+  const locationBlock = html.match(/<section class="chapter" id="location"[\s\S]*?<\/section>/)[0];
+  assert.ok(locationBlock.includes('하귀초등학교'));
+  assert.ok(locationBlock.includes('귀일중학교'));
+
+  for (const img of [
+    'location-edu-1.jpg', 'location-edu-2.jpg',
+    'location-life-1.jpg', 'location-life-2.jpg',
+    'location-view-1.jpg', 'location-view-2.jpg',
+  ]) {
+    assert.ok(locationBlock.includes(`images/${img}`), `expected images/${img} in the location section`);
+  }
+
+  for (const detail of [
+    '하귀초등학교 후문 연계 학교상권 발전 가능',
+    '일주서로',
+    '시 외곽지역 주거지 조망권은 매우 중요한 요인',
+  ]) {
+    assert.ok(locationBlock.includes(detail), `expected detail text "${detail}"`);
+  }
+
+  for (const concl of [
+    '유아부터 중등까지 교육여건 매우 우수',
+    '자연환경과 생활편의 모두 가능한 입지',
+    '바다와 자연 조망이 가능한 입지',
+  ]) {
+    assert.ok(locationBlock.includes(concl), `expected conclusion "${concl}"`);
+  }
+
+  assert.ok(locationBlock.includes('하귀2리 2089'), 'expected the real address in the map label');
+  assert.ok(locationBlock.match(/<iframe[^>]*src="https:\/\/maps\.google\.com/), 'expected a Google Maps iframe');
 });
 
 test('gallery chapter groups photos by phase and labels 5cha as a prior build', () => {
