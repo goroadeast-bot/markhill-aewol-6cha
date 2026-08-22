@@ -439,8 +439,19 @@ main#pageContent { padding-top: 60px; }
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
 }
+.area-table td:first-child, .price-table td:first-child { font-weight: 700; color: var(--ink); }
 .price-disclaimer { font-size: 13px; color: var(--ink-subtle); margin-bottom: 32px; }
 .terms-block { display: grid; gap: 8px; font-size: 15px; }
+.terms-hl {
+  position: relative;
+  font-weight: 700; color: var(--ink);
+  background-image: linear-gradient(rgba(181, 102, 58, 0.22), rgba(181, 102, 58, 0.22));
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  padding: 0 3px;
+  border-radius: 3px;
+}
+.terms-hl-num { color: var(--accent); }
 
 .location-row {
   display: grid;

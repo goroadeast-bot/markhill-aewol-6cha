@@ -293,3 +293,22 @@ test('page declares an explicit light color-scheme so mobile dark-mode browsers 
   const css = readFileSync('css/styles.css', 'utf8');
   assert.ok(css.match(/:root\s*{\s*color-scheme:\s*light;/), 'expected `color-scheme: light` as the first declaration in :root');
 });
+
+test('types intro wraps only the eyebrow and title — the tables are untouched', () => {
+  const typesBlock = html.match(/<section class="chapter" id="types"[\s\S]*?<\/section>/)[0];
+  const introMatch = typesBlock.match(/<div class="types-intro">([\s\S]*?)<\/div>\s*<table class="area-table">/);
+  assert.ok(introMatch, 'expected a <div class="types-intro"> wrapping the eyebrow/title, immediately followed by <table class="area-table">');
+  const introInner = introMatch[1];
+  assert.ok(introInner.includes('class="eyebrow"'));
+  assert.ok(introInner.includes('class="section-title"'));
+  assert.ok(!introInner.includes('<table'), 'the tables must not be inside .types-intro');
+});
+
+test('contract terms and event copy highlight the key figures with terms-hl spans', () => {
+  const typesBlock = html.match(/<section class="chapter" id="types"[\s\S]*?<\/section>/)[0];
+  const termsBlock = typesBlock.match(/<div class="terms-block">[\s\S]*?<\/div>/)[0];
+  assert.ok(termsBlock.includes('<span class="terms-hl"><span class="terms-hl-num">5%</span>(계약)</span>'));
+  assert.ok(termsBlock.includes('<span class="terms-hl"><span class="terms-hl-num">5%</span>(계약 1개월 후)</span>'));
+  assert.ok(termsBlock.includes('<span class="terms-hl"><span class="terms-hl-num">90%</span>(소유권이전시)</span>'));
+  assert.ok(termsBlock.includes('<span class="terms-hl">무상 제공</span>'));
+});
