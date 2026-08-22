@@ -287,3 +287,9 @@ test('siteplan image sits inside a scaler wrapper and no longer uses the one-sho
   assert.ok(!overviewBlock.includes('siteplan-block reveal'));
   assert.ok(overviewBlock.match(/<div class="siteplan-scaler">\s*<img src="images\/6cha-siteplan\.jpg"/), 'expected the siteplan img wrapped in a siteplan-scaler div');
 });
+
+test('page declares an explicit light color-scheme so mobile dark-mode browsers do not auto-darken photos', () => {
+  assert.ok(html.includes('<meta name="color-scheme" content="light">'), 'expected a color-scheme meta tag in <head>');
+  const css = readFileSync('css/styles.css', 'utf8');
+  assert.ok(css.match(/:root\s*{\s*color-scheme:\s*light;/), 'expected `color-scheme: light` as the first declaration in :root');
+});
