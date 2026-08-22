@@ -348,8 +348,16 @@ main#pageContent { padding-top: 60px; }
 }
 .spec-table th { width: 160px; color: var(--ink-subtle); font-weight: 600; font-size: 14px; }
 .spec-table td { font-size: 15px; }
+.spec-highlight {
+  font-weight: 700;
+  color: var(--accent);
+  background: linear-gradient(transparent 62%, rgba(181, 102, 58, 0.16) 62%);
+  padding: 0 1px;
+}
+.spec-strong { font-weight: 700; color: var(--ink); }
 .siteplan-block img { border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 1600 / 1131; object-fit: cover; }
 .siteplan-caption { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }
+.siteplan-scaler { transform-origin: center center; will-change: transform; }
 
 .feature-grid {
   display: grid;

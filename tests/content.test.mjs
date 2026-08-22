@@ -133,7 +133,7 @@ test('overview chapter states the official project facts', () => {
   assert.ok(html.includes('하귀2리 2089번지'));
   assert.ok(html.includes('84타입 20세대'));
   assert.ok(html.includes('2026년 10월 샘플하우스 오픈'));
-  assert.ok(html.includes('2027년 7월 입주 예정'));
+  assert.ok(html.includes('2027년 7월 입주') && html.includes('예정'));
   assert.ok(html.includes('images/6cha-siteplan.jpg'));
 });
 
@@ -226,4 +226,31 @@ test('each hero card carries a one-line description grounded in real facts, plus
     assert.ok(block.includes(expectedDescriptions[i]), `card ${i} must include "${expectedDescriptions[i]}"`);
     assert.ok(block.includes('class="hero-card-arrow"') && block.includes('›'), `card ${i} must have a hero-card-arrow with ›`);
   });
+});
+
+test('overview intro group wraps eyebrow, title, and spec table for the repeat-reveal animation', () => {
+  const overviewBlock = html.match(/<section class="chapter" id="overview"[\s\S]*?<\/section>/)[0];
+  const introMatch = overviewBlock.match(/<div class="overview-intro">([\s\S]*?)<\/div>\s*<div class="siteplan-block/);
+  assert.ok(introMatch, 'expected a <div class="overview-intro"> wrapping the eyebrow/title/table');
+  const introInner = introMatch[1];
+  assert.ok(introInner.includes('class="eyebrow"'));
+  assert.ok(introInner.includes('class="section-title"'));
+  assert.ok(introInner.includes('class="spec-table"'));
+});
+
+test('the three overview selling points get highlight styling, other proper nouns get plain bold', () => {
+  const overviewBlock = html.match(/<section class="chapter" id="overview"[\s\S]*?<\/section>/)[0];
+  for (const phrase of ['84타입 20세대', '세대당 2.1대', '2027년 7월 입주']) {
+    assert.ok(overviewBlock.includes(`<span class="spec-highlight">${phrase}</span>`), `expected "${phrase}" wrapped in spec-highlight`);
+  }
+  for (const phrase of ['남건종합건설㈜', '하귀2리 2089번지', '마크힐센터']) {
+    assert.ok(overviewBlock.includes(`<span class="spec-strong">${phrase}</span>`), `expected "${phrase}" wrapped in spec-strong`);
+  }
+});
+
+test('siteplan image sits inside a scaler wrapper and no longer uses the one-shot reveal class', () => {
+  const overviewBlock = html.match(/<section class="chapter" id="overview"[\s\S]*?<\/section>/)[0];
+  assert.ok(overviewBlock.includes('<div class="siteplan-block">'), 'siteplan-block must no longer carry the reveal class');
+  assert.ok(!overviewBlock.includes('siteplan-block reveal'));
+  assert.ok(overviewBlock.match(/<div class="siteplan-scaler">\s*<img src="images\/6cha-siteplan\.jpg"/), 'expected the siteplan img wrapped in a siteplan-scaler div');
 });
