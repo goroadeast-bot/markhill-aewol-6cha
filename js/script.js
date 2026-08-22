@@ -131,6 +131,38 @@ if (locationReveals.length) {
   locationReveals.forEach((el) => locationObserver.observe(el));
 }
 
+// Types intro — title-only repeat-reveal, same pattern as overview/location
+const typesIntro = document.querySelector('.types-intro');
+if (typesIntro) {
+  const typesObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.2 }
+  );
+  typesObserver.observe(typesIntro);
+}
+
+// Terms block — sweep-highlight the key figures in order, staggered 160ms apart, repeats
+const termsBlock = document.querySelector('.terms-block');
+if (termsBlock) {
+  const termsHighlights = Array.from(termsBlock.querySelectorAll('.terms-hl'));
+  termsHighlights.forEach((el, i) => {
+    el.style.transitionDelay = `${i * 160}ms`;
+  });
+  const termsObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.2 }
+  );
+  termsObserver.observe(termsBlock);
+}
+
 // Siteplan scroll-linked scale (0.78 at bottom of viewport → 1.00 when centered) + caption trigger
 const siteplanScaler = document.querySelector('.siteplan-scaler');
 const siteplanCaption = document.querySelector('.siteplan-caption');
