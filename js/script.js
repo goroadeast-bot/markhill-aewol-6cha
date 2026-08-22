@@ -103,6 +103,20 @@ if (heroCopy && heroCardEls.length) {
   }
 }
 
+// Overview intro — repeats every time it scrolls into/out of view (not one-shot)
+const overviewIntro = document.querySelector('.overview-intro');
+if (overviewIntro) {
+  const introObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.2 }
+  );
+  introObserver.observe(overviewIntro);
+}
+
 // Phone modal
 const phoneModal = document.getElementById('phoneModal');
 

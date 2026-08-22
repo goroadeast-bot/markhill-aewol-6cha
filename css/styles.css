@@ -308,6 +308,11 @@ main#pageContent { padding-top: 60px; }
     opacity: 1; transform: none; filter: none;
   }
   .hero-copy::before { transform: scaleY(1); }
+  .overview-intro > .eyebrow,
+  .overview-intro > .section-title,
+  .overview-intro > .spec-table {
+    opacity: 1; transform: none; filter: none;
+  }
 }
 
 .timeline-grid {
@@ -358,6 +363,21 @@ main#pageContent { padding-top: 60px; }
 .siteplan-block img { border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 1600 / 1131; object-fit: cover; }
 .siteplan-caption { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }
 .siteplan-scaler { transform-origin: center center; will-change: transform; }
+.overview-intro > .eyebrow,
+.overview-intro > .section-title,
+.overview-intro > .spec-table {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(5px);
+}
+.overview-intro.is-visible > .eyebrow,
+.overview-intro.is-visible > .section-title,
+.overview-intro.is-visible > .spec-table {
+  opacity: 1; transform: none; filter: blur(0);
+  transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.7s cubic-bezier(0.23, 1, 0.32, 1),
+              filter 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
 
 .feature-grid {
   display: grid;
