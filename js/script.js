@@ -117,6 +117,27 @@ if (overviewIntro) {
   introObserver.observe(overviewIntro);
 }
 
+// Siteplan scroll-linked scale (0.78 at bottom of viewport → 1.00 when centered) + caption trigger
+const siteplanScaler = document.querySelector('.siteplan-scaler');
+const siteplanCaption = document.querySelector('.siteplan-caption');
+const START_SCALE = 0.78;
+
+if (siteplanScaler && siteplanCaption && !reduceMotion) {
+  const updateSiteplanScale = () => {
+    const rect = siteplanScaler.getBoundingClientRect();
+    const centerY = rect.top + rect.height / 2;
+    const progress = Math.max(0, Math.min(1, (window.innerHeight - centerY) / (window.innerHeight * 0.5)));
+    const scale = START_SCALE + progress * (1 - START_SCALE);
+    siteplanScaler.style.transform = `scale(${scale.toFixed(3)})`;
+    siteplanCaption.classList.toggle('is-revealed', progress >= 0.995);
+  };
+  window.addEventListener('scroll', updateSiteplanScale, { passive: true });
+  window.addEventListener('resize', updateSiteplanScale);
+  updateSiteplanScale();
+} else if (siteplanCaption) {
+  siteplanCaption.classList.add('is-revealed');
+}
+
 // Phone modal
 const phoneModal = document.getElementById('phoneModal');
 
