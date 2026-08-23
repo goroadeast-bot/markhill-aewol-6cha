@@ -268,6 +268,63 @@ if (rooftopNote) {
   rooftopNoteObserver.observe(rooftopNote);
 }
 
+// History timeline — items reveal on scroll, sticky rail tracks the active phase
+const historyTimeline = document.querySelector('.htl');
+if (historyTimeline) {
+  const htlItems = Array.from(historyTimeline.querySelectorAll('.htl-item'));
+  const htlYear = document.getElementById('htlYear');
+  const htlPlace = document.getElementById('htlPlace');
+  const htlIdx = document.getElementById('htlIdx');
+  const htlBar = document.getElementById('htlBar');
+
+  function setHistoryRail(item) {
+    const year = item.dataset.year;
+    const place = item.dataset.place;
+    htlIdx.textContent = item.dataset.idx;
+    if (htlYear.textContent === year && htlPlace.textContent === place) return;
+    htlYear.classList.add('is-swapping');
+    htlPlace.classList.add('is-swapping');
+    setTimeout(() => {
+      htlYear.textContent = year;
+      htlPlace.textContent = place;
+      htlYear.classList.remove('is-swapping');
+      htlPlace.classList.remove('is-swapping');
+    }, 190);
+  }
+
+  if (reduceMotion) {
+    htlItems.forEach((el) => el.classList.add('is-visible'));
+    setHistoryRail(htlItems[htlItems.length - 1]);
+    htlBar.style.width = '100%';
+  } else {
+    const htlObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          entry.target.classList.toggle('is-visible', entry.isIntersecting);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    htlItems.forEach((el) => htlObserver.observe(el));
+
+    let htlActive = -1;
+    const updateHistoryRail = () => {
+      const line = window.innerHeight * 0.38;
+      let best = 0;
+      htlItems.forEach((el, i) => {
+        if (el.getBoundingClientRect().top <= line) best = i;
+      });
+      if (best === htlActive) return;
+      htlActive = best;
+      setHistoryRail(htlItems[best]);
+      htlBar.style.width = `${Math.round(((best + 1) / htlItems.length) * 100)}%`;
+    };
+    window.addEventListener('scroll', updateHistoryRail, { passive: true });
+    window.addEventListener('resize', updateHistoryRail);
+    updateHistoryRail();
+  }
+}
+
 // Siteplan scroll-linked scale (0.78 at bottom of viewport → 1.00 when centered) + caption trigger
 const siteplanScaler = document.querySelector('.siteplan-scaler');
 const siteplanCaption = document.querySelector('.siteplan-caption');
