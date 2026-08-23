@@ -163,6 +163,34 @@ if (termsBlock) {
   termsObserver.observe(termsBlock);
 }
 
+// Premium intro — same repeat-reveal pattern as overview/location/types
+const premiumIntro = document.querySelector('.premium-intro');
+if (premiumIntro) {
+  const premiumObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.2 }
+  );
+  premiumObserver.observe(premiumIntro);
+}
+
+// Premium note — sweep-highlight "참고용 이미지", repeats on scroll in/out
+const premiumNote = document.querySelector('.acc-note');
+if (premiumNote) {
+  const premiumNoteObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.6 }
+  );
+  premiumNoteObserver.observe(premiumNote);
+}
+
 // Siteplan scroll-linked scale (0.78 at bottom of viewport → 1.00 when centered) + caption trigger
 const siteplanScaler = document.querySelector('.siteplan-scaler');
 const siteplanCaption = document.querySelector('.siteplan-caption');
