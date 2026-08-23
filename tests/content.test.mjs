@@ -26,6 +26,12 @@ const requiredImages = [
   'images/location-life-2.jpg',
   'images/location-view-1.jpg',
   'images/location-view-2.jpg',
+  'images/premium-01-solar.jpg',
+  'images/premium-02-kitchen.jpg',
+  'images/premium-03-door.jpg',
+  'images/premium-04-sprinkler.jpg',
+  'images/premium-05-center.jpg',
+  'images/premium-06-bath.jpg',
 ];
 
 test('all curated site photos exist in images/', () => {
@@ -311,4 +317,31 @@ test('contract terms and event copy highlight the key figures with terms-hl span
   assert.ok(termsBlock.includes('<span class="terms-hl"><span class="terms-hl-num">5%</span>(계약 1개월 후)</span>'));
   assert.ok(termsBlock.includes('<span class="terms-hl"><span class="terms-hl-num">90%</span>(소유권이전시)</span>'));
   assert.ok(termsBlock.includes('<span class="terms-hl">무상 제공</span>'));
+});
+
+test('premium section has 6 accordion panels with real photos and history-accurate badges', () => {
+  const premiumBlock = html.match(/<section class="chapter" id="premium"[\s\S]*?<\/section>/)[0];
+  const accItems = [...premiumBlock.matchAll(/<div class="acc-item">/g)];
+  assert.equal(accItems.length, 6, 'expected exactly 6 .acc-item panels');
+
+  for (const img of [
+    'images/premium-01-solar.jpg',
+    'images/premium-02-kitchen.jpg',
+    'images/premium-03-door.jpg',
+    'images/premium-04-sprinkler.jpg',
+    'images/premium-05-center.jpg',
+    'images/premium-06-bath.jpg',
+  ]) {
+    assert.ok(premiumBlock.includes(`src="${img}"`), `expected ${img} in the premium accordion`);
+  }
+
+  const newBadges = [...premiumBlock.matchAll(/<span class="is-new">([^<]+)<\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(newBadges, ['6차 신규', '6차 신규', '6차 강화'], 'solar and sprinkler are 6차 신규, 마크힐센터 is 6차 강화');
+  const neutralBadges = [...premiumBlock.matchAll(/<div class="acc-badge"><span>([^<]+)<\/span><\/div>/g)].map((m) => m[1]);
+  assert.deepEqual(neutralBadges, ['1차부터', '1차부터', '1차부터'], 'kitchen, door and bathtub have been present since 1차');
+});
+
+test('premium reference-image note is bold with a highlighted key phrase', () => {
+  const premiumBlock = html.match(/<section class="chapter" id="premium"[\s\S]*?<\/section>/)[0];
+  assert.ok(premiumBlock.includes('<p class="acc-note">* 이해를 돕기 위한 <span class="acc-note-hl">참고용 이미지</span>입니다.</p>'));
 });
