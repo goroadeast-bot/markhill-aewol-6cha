@@ -343,8 +343,8 @@ main#pageContent { padding-top: 60px; }
 }
 .htl-item:hover .htl-photo img { transform: scale(1.05); filter: saturate(1.04) brightness(1.04); }
 .htl-no {
-  position: absolute; top: 14px; left: 16px; z-index: 2;
-  font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: 0.1em;
+  position: absolute; top: 16px; left: 18px; z-index: 2;
+  font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 20px; letter-spacing: 0.07em;
   color: var(--on-dark); text-shadow: 0 1px 10px rgba(0,0,0,0.6);
 }
 .htl-h { font-weight: 900; font-size: 20px; color: var(--ink); letter-spacing: -0.01em; margin: 0 0 7px; }
