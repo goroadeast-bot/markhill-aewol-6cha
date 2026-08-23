@@ -501,21 +501,81 @@ main#pageContent { padding-top: 60px; }
   .acc-note-hl { background-size: 100% 100% !important; transition: none !important; }
 }
 
-.signature-moment {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
+.rooftop-intro { margin-top: 40px; }
+.rooftop-title { font-weight: 900; letter-spacing: -0.015em; font-size: 30px; line-height: 1.2; color: var(--ink); margin: 4px 0 12px; }
+.rooftop-key { color: var(--accent); font-weight: 700; }
+
+/* 옥탑 타이틀 — 단어가 마스크 안에서 아래로부터 밀려 올라옴 */
+.rt-word { display: inline-block; overflow: hidden; vertical-align: bottom; }
+.rt-word i { display: inline-block; font-style: normal; transform: translateY(105%); }
+.rooftop-intro.is-visible .rt-word i {
+  transform: translateY(0);
+  transition: transform 0.78s cubic-bezier(0.19, 1, 0.22, 1);
 }
-.signature-moment img { width: 100%; aspect-ratio: 1221 / 864; object-fit: cover; }
-.signature-moment figcaption {
-  position: absolute;
-  left: 0; bottom: 0; right: 0;
-  padding: 32px;
-  background: linear-gradient(to top, rgba(31,27,23,0.9), transparent);
-  color: var(--on-dark);
+/* 이유브로우 / 부제 — 흐림 걷히며 올라옴, 같은 리빌 그룹 */
+.rooftop-intro .rt-fade { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+.rooftop-intro.is-visible .rt-fade {
+  opacity: 1; transform: none; filter: blur(0);
+  transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.7s cubic-bezier(0.23, 1, 0.32, 1),
+              filter 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.signature-moment figcaption .section-lede {
-  color: var(--on-dark-muted);
+@media (prefers-reduced-motion: reduce) {
+  .rt-word i { transform: none !important; transition: none !important; }
+  .rooftop-intro .rt-fade { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+/* 벤토그리드 — 큰 타일(선셋라운지) + 수치 타일(2.93kw) + 사진 3장 */
+.rooftop-bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 152px; gap: 12px; margin: 28px 0 16px; }
+.rooftop-cell {
+  position: relative; border-radius: 14px; overflow: hidden; background: #221E1A;
+  opacity: 0; transform: translateY(22px) scale(0.97);
+}
+.rooftop-bento.is-visible .rooftop-cell {
+  opacity: 1; transform: none;
+  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.rooftop-cell img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.rooftop-cell:hover img { transform: scale(1.05); }
+.rooftop-cell::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(20,18,16,0.88) 0%, rgba(20,18,16,0.3) 52%, rgba(20,18,16,0.06) 100%);
+}
+.rooftop-cap { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 16px 18px; }
+.rooftop-cap h4 { font-weight: 900; font-size: 16px; color: var(--on-dark); letter-spacing: -0.01em; margin: 0 0 4px; }
+.rooftop-cap p { font-size: 12px; line-height: 1.55; color: var(--on-dark-muted); margin: 0; }
+.rooftop-cell-big { grid-column: span 2; grid-row: span 2; }
+.rooftop-cell-big .rooftop-cap { padding: 22px 24px; }
+.rooftop-cell-big .rooftop-cap h4 { font-size: 24px; margin-bottom: 6px; }
+.rooftop-cell-big .rooftop-cap p { font-size: 13px; max-width: 34ch; }
+
+.rooftop-stat {
+  background: linear-gradient(150deg, var(--accent) 0%, var(--accent-ink) 100%);
+  display: flex; flex-direction: column; justify-content: center; padding: 18px;
+}
+.rooftop-num { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 30px; color: #fff; line-height: 1; letter-spacing: -0.02em; }
+.rooftop-unit-kw { font-size: 17px; }
+.rooftop-unit { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.82); margin-top: 6px; letter-spacing: 0.04em; }
+.rooftop-desc { font-size: 12px; line-height: 1.55; color: rgba(255,255,255,0.9); margin-top: 12px; }
+@media (prefers-reduced-motion: reduce) {
+  .rooftop-cell, .rooftop-cell img { transition: none !important; }
+}
+
+.rooftop-note { margin: 0 0 40px; font-size: 13px; font-weight: 700; color: var(--accent-ink); letter-spacing: 0.01em; }
+.rooftop-note-hl {
+  background-image: linear-gradient(rgba(181,102,58,0.28), rgba(181,102,58,0.28));
+  background-repeat: no-repeat; background-position: 0 0; background-size: 0% 100%;
+  padding: 1px 3px; border-radius: 3px;
+}
+.rooftop-note.is-visible .rooftop-note-hl {
+  background-size: 100% 100%;
+  transition: background-size 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.25s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rooftop-note-hl { background-size: 100% 100% !important; transition: none !important; }
 }
 .area-table, .price-table {
   width: 100%;
