@@ -136,12 +136,52 @@ test('hero chapter shows the real 6cha headline facts', () => {
 });
 
 test('history chapter covers all 6 phases with real facts', () => {
-  assert.ok(html.includes('18세대(3개동)'));
-  assert.ok(html.includes('23세대(4개동)'));
+  assert.ok(html.includes('<em>18세대</em> · 3개동'));
+  assert.ok(html.includes('<em>23세대</em> · 4개동'));
   assert.ok(html.includes('제주사회복지공동모금회'));
   assert.ok(html.includes('보이드 구조'));
   assert.ok(html.includes('2025.7.17'));
   assert.ok(html.includes('옥탑 선셋라운지'));
+});
+
+test('history timeline pairs each phase with its real year, place, and photo', () => {
+  const historyBlock = html.match(/<section class="chapter" id="history"[\s\S]*?<\/section>/)[0];
+  const items = [...historyBlock.matchAll(/<article class="htl-item[^"]*"\s+data-year="([^"]+)"\s+data-place="([^"]+)"\s+data-idx="([^"]+)"/g)];
+  assert.equal(items.length, 6, 'expected exactly 6 timeline items');
+
+  assert.deepEqual(
+    items.map((m) => [m[1], m[2], m[3]]),
+    [
+      ['2020~21', '애월읍 상귀리', '01'],
+      ['2022', '애월읍 상귀리', '02'],
+      ['2022', '애월읍 상귀리', '03'],
+      ['2023', '제주시 외도일동', '04'],
+      ['2024~25', '노형동', '05'],
+      ['2026~', '애월읍 하귀2리', '06'],
+    ]
+  );
+
+  for (const img of [
+    'images/history-1cha.jpg',
+    'images/history-2cha.jpg',
+    'images/history-3cha.jpg',
+    'images/history-4cha.jpg',
+    'images/history-5cha-penthouse.jpg',
+    'images/rooftop-01-lounge.jpg',
+  ]) {
+    assert.ok(historyBlock.includes(`src="${img}"`), `expected ${img} in the history timeline`);
+  }
+
+  // 6차 keeps its CTA into the sale section
+  assert.ok(historyBlock.includes('<a class="btn btn-accent" href="#overview">6차 자세히 보기</a>'));
+});
+
+test('history rail totals only the delivered phases (1~5차), excluding the unbuilt 6차', () => {
+  const historyBlock = html.match(/<section class="chapter" id="history"[\s\S]*?<\/section>/)[0];
+  assert.ok(historyBlock.includes('1~5차 누적 공급'), 'the total must be labelled as covering 1~5차 only');
+  assert.ok(historyBlock.includes('<b>127세대</b>'), '18+23+26+12+48 = 127');
+  // 6차's 20세대 must not be folded into the cumulative figure
+  assert.ok(!historyBlock.includes('147세대'));
 });
 
 test('overview chapter states the official project facts', () => {
