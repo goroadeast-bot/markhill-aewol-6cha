@@ -191,6 +191,83 @@ if (premiumNote) {
   premiumNoteObserver.observe(premiumNote);
 }
 
+// Rooftop intro — title words mask-reveal + eyebrow/lede fade, same repeat-reveal group
+const rooftopIntro = document.querySelector('.rooftop-intro');
+if (rooftopIntro) {
+  const rooftopIntroObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.3 }
+  );
+  rooftopIntroObserver.observe(rooftopIntro);
+}
+
+// Rooftop bento grid — cells stagger in (delays set inline in HTML), stat tile counts up 0 → 2.93kw
+const rooftopBento = document.querySelector('.rooftop-bento');
+const rooftopNum = document.getElementById('rooftopNum');
+if (rooftopBento) {
+  const ROOFTOP_TARGET = 2.93;
+  let rooftopCountTimer = null;
+
+  function setRooftopNum(value) {
+    if (!rooftopNum) return;
+    rooftopNum.innerHTML = `${value.toFixed(2)}<span class="rooftop-unit-kw">kw</span>`;
+  }
+
+  function rooftopCountUp() {
+    clearInterval(rooftopCountTimer);
+    const duration = 900;
+    const start = Date.now();
+    rooftopCountTimer = setInterval(() => {
+      const progress = Math.min(1, (Date.now() - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setRooftopNum(ROOFTOP_TARGET * eased);
+      if (progress >= 1) clearInterval(rooftopCountTimer);
+    }, 16);
+  }
+
+  if (reduceMotion) {
+    rooftopBento.classList.add('is-visible');
+    setRooftopNum(ROOFTOP_TARGET);
+  } else {
+    setRooftopNum(0);
+    let rooftopWasVisible = false;
+    const rooftopBentoObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          rooftopBento.classList.toggle('is-visible', entry.isIntersecting);
+          if (entry.isIntersecting && !rooftopWasVisible) {
+            setTimeout(rooftopCountUp, 900);
+          } else if (!entry.isIntersecting && rooftopWasVisible) {
+            clearInterval(rooftopCountTimer);
+            setRooftopNum(0);
+          }
+          rooftopWasVisible = entry.isIntersecting;
+        }
+      },
+      { threshold: 0.3 }
+    );
+    rooftopBentoObserver.observe(rooftopBento);
+  }
+}
+
+// Rooftop note — sweep-highlight "참고용 이미지", repeats on scroll in/out
+const rooftopNote = document.getElementById('rooftopNote');
+if (rooftopNote) {
+  const rooftopNoteObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.6 }
+  );
+  rooftopNoteObserver.observe(rooftopNote);
+}
+
 // Siteplan scroll-linked scale (0.78 at bottom of viewport → 1.00 when centered) + caption trigger
 const siteplanScaler = document.querySelector('.siteplan-scaler');
 const siteplanCaption = document.querySelector('.siteplan-caption');
