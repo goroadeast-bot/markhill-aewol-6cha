@@ -13,7 +13,10 @@ const requiredImages = [
   'images/gallery-3cha-02.jpg',
   'images/gallery-4cha-02.jpg',
   'images/gallery-5cha-02.jpg',
-  'images/6cha-rooftop.jpg',
+  'images/rooftop-01-lounge.jpg',
+  'images/rooftop-02-night.jpg',
+  'images/rooftop-03-pet.jpg',
+  'images/rooftop-04-yoga.jpg',
   'images/6cha-location.jpg',
   'images/6cha-siteplan.jpg',
   'images/icon-overview.jpeg',
@@ -153,7 +156,22 @@ test('premium chapter lists real 6cha amenities', () => {
   assert.ok(html.includes('2.93kw'));
   assert.ok(html.includes('선셋라운지'));
   assert.ok(html.includes('마크힐센터'));
-  assert.ok(html.includes('images/6cha-rooftop.jpg'));
+});
+
+test('rooftop bento grid has 4 real photos, a mask-reveal title, and a count-up stat tile', () => {
+  const rooftopBlock = html.match(/<div class="rooftop-intro">[\s\S]*?<p class="rooftop-note"[\s\S]*?<\/p>/)[0];
+  for (const img of [
+    'images/rooftop-01-lounge.jpg',
+    'images/rooftop-02-night.jpg',
+    'images/rooftop-03-pet.jpg',
+    'images/rooftop-04-yoga.jpg',
+  ]) {
+    assert.ok(rooftopBlock.includes(`src="${img}"`), `expected ${img} in the rooftop bento grid`);
+  }
+  const words = [...rooftopBlock.matchAll(/<span class="rt-word"><i[^>]*>([^<]+)<\/i><\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(words, ['옥탑', '전체를,', '주민에게']);
+  assert.ok(rooftopBlock.includes('id="rooftopNum"'));
+  assert.ok(rooftopBlock.includes('<p class="rooftop-note" id="rooftopNote">* 이해를 돕기 위한 <span class="rooftop-note-hl">참고용 이미지</span>입니다.</p>'));
 });
 
 test('types & pricing chapter carries the exact official figures and disclaimer', () => {
