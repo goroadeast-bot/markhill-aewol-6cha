@@ -311,34 +311,57 @@ main#pageContent { padding-top: 60px; }
   .hero-copy::before { transform: scaleY(1); }
 }
 
-.timeline-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  margin-top: 40px;
+/* 역사 — 스티키 연도 레일 + 대형 사진 타임라인 */
+.htl { display: grid; grid-template-columns: 250px 1fr; gap: 40px; margin-top: 40px; }
+.htl-rail { position: sticky; top: 88px; align-self: start; }
+.htl-year {
+  font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 52px; line-height: 1;
+  color: var(--ink); letter-spacing: -0.03em; margin-bottom: 8px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
-.timeline-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
+.htl-year.is-swapping { opacity: 0; transform: translateY(-8px); }
+.htl-place { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 20px; transition: opacity 0.3s ease; }
+.htl-place.is-swapping { opacity: 0; }
+.htl-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-subtle); letter-spacing: 0.1em; margin-bottom: 10px; }
+.htl-count b { color: var(--ink); font-size: 15px; }
+.htl-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 22px; }
+.htl-bar i { display: block; height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1); }
+.htl-total { font-size: 12px; line-height: 1.7; color: var(--ink-subtle); border-top: 1px solid var(--border); padding-top: 14px; }
+.htl-total b { color: var(--ink); font-size: 15px; font-family: 'JetBrains Mono', monospace; }
+
+.htl-item { margin-bottom: 56px; opacity: 0; transform: translateY(28px); }
+.htl-item:last-child { margin-bottom: 0; }
+.htl-item.is-visible {
+  opacity: 1; transform: none;
+  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
-.timeline-photo {
-  aspect-ratio: 4 / 3;
-  background-size: cover;
-  background-position: center;
+.htl-photo { position: relative; border-radius: 14px; overflow: hidden; height: 270px; background: #221E1A; margin-bottom: 16px; }
+.htl-photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(0.86) brightness(0.86);
+  transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1), filter 0.55s ease;
 }
-.timeline-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-.timeline-tag { font-size: 12px; color: var(--accent-ink); }
-.timeline-card-current {
-  background: var(--dark-surface);
-  color: var(--on-dark);
-  justify-content: center;
+.htl-item:hover .htl-photo img { transform: scale(1.05); filter: saturate(1.04) brightness(1.04); }
+.htl-no {
+  position: absolute; top: 14px; left: 16px; z-index: 2;
+  font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; letter-spacing: 0.1em;
+  color: var(--on-dark); text-shadow: 0 1px 10px rgba(0,0,0,0.6);
 }
-.timeline-card-current .timeline-tag { color: var(--accent); }
-.timeline-card-current .btn { align-self: flex-start; margin-top: 8px; }
+.htl-h { font-weight: 900; font-size: 20px; color: var(--ink); letter-spacing: -0.01em; margin: 0 0 7px; }
+.htl-h em { font-style: normal; color: var(--accent); }
+.htl-d { font-size: 13.5px; line-height: 1.7; color: var(--ink-muted); margin: 0; max-width: 46ch; }
+.htl-item-now .btn { margin-top: 14px; }
+@media (prefers-reduced-motion: reduce) {
+  .htl-item { opacity: 1; transform: none; transition: none; }
+  .htl-photo img, .htl-year, .htl-place, .htl-bar i { transition: none !important; }
+}
+@media (max-width: 720px) {
+  .htl { grid-template-columns: 1fr; gap: 24px; }
+  .htl-rail { position: static; }
+  .htl-year { font-size: 40px; }
+  .htl-item { margin-bottom: 40px; }
+  .htl-photo { height: 210px; }
+}
 
 .spec-table { width: 100%; border-collapse: collapse; margin: 32px 0; }
 .spec-table th, .spec-table td {
