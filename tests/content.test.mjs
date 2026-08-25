@@ -35,6 +35,22 @@ const requiredImages = [
   'images/premium-04-sprinkler.jpg',
   'images/premium-05-center.jpg',
   'images/premium-06-bath.jpg',
+  'images/history-modal-1cha-living.jpg',
+  'images/history-modal-1cha-kitchen.jpg',
+  'images/history-modal-1cha-dining.jpg',
+  'images/history-modal-1cha-master.jpg',
+  'images/history-modal-2cha-living.jpg',
+  'images/history-modal-2cha-kitchen.jpg',
+  'images/history-modal-2cha-dining.jpg',
+  'images/history-modal-2cha-master.jpg',
+  'images/history-modal-4cha-living.jpg',
+  'images/history-modal-4cha-kitchen.jpg',
+  'images/history-modal-4cha-dining.jpg',
+  'images/history-modal-4cha-master.jpg',
+  'images/history-modal-5cha-living.jpg',
+  'images/history-modal-5cha-kitchen.jpg',
+  'images/history-modal-5cha-dining.jpg',
+  'images/history-modal-5cha-master.jpg',
 ];
 
 test('all curated site photos exist in images/', () => {
@@ -402,4 +418,32 @@ test('premium section has 6 accordion panels with real photos and history-accura
 test('premium reference-image note is bold with a highlighted key phrase', () => {
   const premiumBlock = html.match(/<section class="chapter" id="premium"[\s\S]*?<\/section>/)[0];
   assert.ok(premiumBlock.includes('<p class="acc-note">* 이해를 돕기 위한 <span class="acc-note-hl">참고용 이미지</span>입니다.</p>'));
+});
+
+test('history timeline: exactly the 1~5차 cards are clickable (data-phase), 6차 is not', () => {
+  const historyBlock = html.match(/<section class="chapter" id="history"[\s\S]*?<\/section>/)[0];
+  const phased = [...historyBlock.matchAll(/data-phase="(\d)"/g)].map((m) => m[1]);
+  assert.deepEqual(phased, ['1', '2', '3', '4', '5'], 'only phases 1-5 should carry data-phase');
+  const sixthItem = historyBlock.match(/<article class="htl-item htl-item-now"[\s\S]*?<\/article>/)[0];
+  assert.ok(!sixthItem.includes('data-phase'), '6차 card must not open the modal — it already has its own CTA');
+  assert.ok(sixthItem.includes('6차 자세히 보기'));
+});
+
+test('history modal overlay markup exists with all required elements', () => {
+  const historyBlock = html.match(/<section class="chapter" id="history"[\s\S]*?<\/section>/)[0];
+  assert.ok(historyBlock.includes('id="hmOverlay"'));
+  for (const id of ['hmPhoto', 'hmTag', 'hmTitle', 'hmSpecs', 'hmGallery', 'hmFeat', 'hmNote', 'hmClose']) {
+    assert.ok(historyBlock.includes(`id="${id}"`), `expected #${id} inside the history modal`);
+  }
+});
+
+test('history modal data (js/script.js) covers phases 1-5 with a 4-photo gallery each, and phase 3 discloses reusing phase 2 photos', () => {
+  const js = readFileSync('js/script.js', 'utf8');
+  const phasesBlock = js.match(/const HISTORY_PHASES = \{[\s\S]*?\n\};/)[0];
+  for (const n of [1, 2, 3, 4, 5]) {
+    assert.ok(phasesBlock.includes(`  ${n}: {`), `expected HISTORY_PHASES[${n}]`);
+  }
+  const galleryImages = [...phasesBlock.matchAll(/images\/history-modal-(\dcha)-(living|kitchen|dining|master)\.jpg/g)];
+  assert.equal(galleryImages.length, 20, 'expected 4 gallery photos referenced across 5 phase entries (3차 reuses 2차 files)');
+  assert.ok(phasesBlock.includes('galleryNote'), 'phase 3 should disclose that it reuses phase 2 photos');
 });
