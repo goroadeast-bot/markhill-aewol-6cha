@@ -342,6 +342,9 @@ main#pageContent { padding-top: 60px; }
   transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1), filter 0.55s ease;
 }
 .htl-item:hover .htl-photo img { transform: scale(1.05); filter: saturate(1.03) brightness(1.02); }
+/* 6차 카드는 옥탑 선셋라운지 사진을 재사용 — 이 카드에서만 노을 톤을 살리기 위해 살짝 어둡게 */
+.htl-item-now .htl-photo img { filter: saturate(0.97) brightness(0.88); }
+.htl-item-now:hover .htl-photo img { filter: saturate(1) brightness(0.94); }
 .htl-no {
   position: absolute; top: 16px; left: 18px; z-index: 2;
   font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 20px; letter-spacing: 0.07em;
