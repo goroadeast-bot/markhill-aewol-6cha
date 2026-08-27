@@ -13,6 +13,76 @@ const requiredImages = [
   'images/gallery-3cha-02.jpg',
   'images/gallery-4cha-02.jpg',
   'images/gallery-5cha-02.jpg',
+  'images/gallery-bento-1cha-01.jpg',
+  'images/gallery-bento-1cha-02.jpg',
+  'images/gallery-bento-1cha-03.jpg',
+  'images/gallery-bento-1cha-04.jpg',
+  'images/gallery-bento-1cha-05.jpg',
+  'images/gallery-bento-1cha-06.jpg',
+  'images/gallery-bento-1cha-07.jpg',
+  'images/gallery-bento-1cha-08.jpg',
+  'images/gallery-bento-1cha-09.jpg',
+  'images/gallery-bento-1cha-10.jpg',
+  'images/gallery-bento-1cha-11.jpg',
+  'images/gallery-bento-1cha-12.jpg',
+  'images/gallery-bento-1cha-13.jpg',
+  'images/gallery-bento-1cha-14.jpg',
+  'images/gallery-bento-2cha-01.jpg',
+  'images/gallery-bento-2cha-02.jpg',
+  'images/gallery-bento-2cha-03.jpg',
+  'images/gallery-bento-2cha-04.jpg',
+  'images/gallery-bento-2cha-05.jpg',
+  'images/gallery-bento-2cha-06.jpg',
+  'images/gallery-bento-2cha-07.jpg',
+  'images/gallery-bento-2cha-08.jpg',
+  'images/gallery-bento-2cha-09.jpg',
+  'images/gallery-bento-2cha-10.jpg',
+  'images/gallery-bento-2cha-11.jpg',
+  'images/gallery-bento-2cha-12.jpg',
+  'images/gallery-bento-2cha-13.jpg',
+  'images/gallery-bento-2cha-14.jpg',
+  'images/gallery-bento-3cha-01.jpg',
+  'images/gallery-bento-3cha-02.jpg',
+  'images/gallery-bento-3cha-03.jpg',
+  'images/gallery-bento-3cha-04.jpg',
+  'images/gallery-bento-3cha-05.jpg',
+  'images/gallery-bento-3cha-06.jpg',
+  'images/gallery-bento-3cha-07.jpg',
+  'images/gallery-bento-3cha-08.jpg',
+  'images/gallery-bento-3cha-09.jpg',
+  'images/gallery-bento-3cha-10.jpg',
+  'images/gallery-bento-3cha-11.jpg',
+  'images/gallery-bento-3cha-12.jpg',
+  'images/gallery-bento-3cha-13.jpg',
+  'images/gallery-bento-3cha-14.jpg',
+  'images/gallery-bento-4cha-01.jpg',
+  'images/gallery-bento-4cha-02.jpg',
+  'images/gallery-bento-4cha-03.jpg',
+  'images/gallery-bento-4cha-04.jpg',
+  'images/gallery-bento-4cha-05.jpg',
+  'images/gallery-bento-4cha-06.jpg',
+  'images/gallery-bento-4cha-07.jpg',
+  'images/gallery-bento-4cha-08.jpg',
+  'images/gallery-bento-4cha-09.jpg',
+  'images/gallery-bento-4cha-10.jpg',
+  'images/gallery-bento-4cha-11.jpg',
+  'images/gallery-bento-4cha-12.jpg',
+  'images/gallery-bento-4cha-13.jpg',
+  'images/gallery-bento-4cha-14.jpg',
+  'images/gallery-bento-5cha-01.jpg',
+  'images/gallery-bento-5cha-02.jpg',
+  'images/gallery-bento-5cha-03.jpg',
+  'images/gallery-bento-5cha-04.jpg',
+  'images/gallery-bento-5cha-05.jpg',
+  'images/gallery-bento-5cha-06.jpg',
+  'images/gallery-bento-5cha-07.jpg',
+  'images/gallery-bento-5cha-08.jpg',
+  'images/gallery-bento-5cha-09.jpg',
+  'images/gallery-bento-5cha-10.jpg',
+  'images/gallery-bento-5cha-11.jpg',
+  'images/gallery-bento-5cha-12.jpg',
+  'images/gallery-bento-5cha-13.jpg',
+  'images/gallery-bento-5cha-14.jpg',
   'images/rooftop-01-lounge.jpg',
   'images/rooftop-02-night.jpg',
   'images/rooftop-03-pet.jpg',
@@ -296,11 +366,42 @@ test('location chapter states the real education/living/view facts with full det
   assert.ok(locationBlock.match(/<iframe[^>]*src="https:\/\/maps\.google\.com/), 'expected a Google Maps iframe');
 });
 
-test('gallery chapter groups photos by phase and labels 5cha as a prior build', () => {
+test('gallery chapter has a bento row per phase (1-5차) plus the existing 6차 group, and labels 6차 as pre-construction', () => {
+  const galleryBlock = html.match(/<section class="chapter" id="gallery"[\s\S]*?<\/section>/)[0];
   for (const phase of ['1차', '2차', '3차', '4차', '5차']) {
-    assert.ok(html.includes(`${phase} ·`), `missing gallery group label for ${phase}`);
+    assert.ok(galleryBlock.includes(`<b>${phase}</b>`), `missing bg-head label for ${phase}`);
   }
-  assert.ok(html.includes('착공 전으로 실제 인테리어 사진이 아직 없습니다'));
+  assert.ok(galleryBlock.includes('6차 · 애월읍 하귀2리 · 착공 전'));
+  assert.ok(galleryBlock.includes('착공 전으로 실제 인테리어 사진이 아직 없습니다'));
+});
+
+test('gallery bento has exactly 70 real photos (14 per phase, 1-5차) with cursor-driven auto-scroll and a click-to-enlarge modal', () => {
+  const galleryBlock = html.match(/<section class="chapter" id="gallery"[\s\S]*?<\/section>/)[0];
+
+  const phaseBlocks = [...galleryBlock.matchAll(/<div class="bg-phase">[\s\S]*?<\/div>\s*<div class="bg-track">/g)];
+  assert.equal(phaseBlocks.length, 5, 'expected exactly 5 .bg-phase rows (1~5차)');
+
+  for (let n = 1; n <= 5; n++) {
+    const cells = [...galleryBlock.matchAll(new RegExp(`images/gallery-bento-${n}cha-\\d{2}\\.jpg`, 'g'))];
+    assert.equal(cells.length, 14, `expected 14 photos for phase ${n}, got ${cells.length}`);
+  }
+
+  assert.ok(galleryBlock.includes('class="bg-edge bg-edge-l"'), 'expected a left auto-scroll edge indicator');
+  assert.ok(galleryBlock.includes('class="bg-edge bg-edge-r"'), 'expected a right auto-scroll edge indicator');
+  assert.ok(galleryBlock.includes('class="bg-track"'), 'expected a scroll-position progress track');
+
+  assert.ok(galleryBlock.includes('id="bgModal"'));
+  for (const id of ['bgImg', 'bgCapT', 'bgCapS', 'bgPrev', 'bgNext', 'bgClose']) {
+    assert.ok(galleryBlock.includes(`id="${id}"`), `expected #${id} inside the gallery modal`);
+  }
+});
+
+test('gallery bento JS wires up cursor-position auto-scroll and the enlarge modal', () => {
+  const js = readFileSync('js/script.js', 'utf8');
+  assert.ok(js.includes("document.getElementById('bgWrap')"));
+  assert.ok(js.includes('scroller.scrollLeft'), 'expected the auto-scroll logic to drive scrollLeft');
+  assert.ok(js.includes('openBentoModal'));
+  assert.ok(js.includes("e.key === 'ArrowLeft'") && js.includes("e.key === 'ArrowRight'"), 'expected arrow-key navigation in the modal');
 });
 
 test('contact chapter and footer only ever route to Aseung realty', () => {
