@@ -470,6 +470,104 @@ if (hmOverlay) {
   });
 }
 
+// Gallery bento — cursor-position auto-scroll per phase row + click-to-enlarge modal
+const bgWrap = document.getElementById('bgWrap');
+if (bgWrap) {
+  const DEAD = 0.18; // center dead-zone (18% each side) so hovering a photo doesn't scroll
+  const MAX_SPEED = 14; // px per animation frame at the very edge
+
+  bgWrap.querySelectorAll('.bg-phase').forEach((phase) => {
+    const scroller = phase.querySelector('.bg-scroller');
+    const edgeL = phase.querySelector('.bg-edge-l');
+    const edgeR = phase.querySelector('.bg-edge-r');
+    const bar = phase.querySelector('.bg-track i');
+    if (!scroller) return;
+
+    let speed = 0;
+    let inside = false;
+    let raf = null;
+
+    function updateBar() {
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      bar.style.width = max > 0 ? `${(scroller.scrollLeft / max) * 100}%` : '0%';
+    }
+
+    function loop() {
+      if (speed !== 0) scroller.scrollLeft += speed;
+      updateBar();
+      raf = inside ? requestAnimationFrame(loop) : null;
+    }
+
+    scroller.addEventListener('mousemove', (e) => {
+      const rect = scroller.getBoundingClientRect();
+      const t = (e.clientX - rect.left) / rect.width; // 0 (left) .. 1 (right)
+      const off = t - 0.5;
+      if (Math.abs(off) < DEAD) {
+        speed = 0;
+      } else {
+        const k = (Math.abs(off) - DEAD) / (0.5 - DEAD);
+        speed = Math.sign(off) * Math.pow(k, 1.7) * MAX_SPEED;
+      }
+      edgeL.classList.toggle('on', speed < 0);
+      edgeR.classList.toggle('on', speed > 0);
+    });
+
+    scroller.addEventListener('mouseenter', () => {
+      inside = true;
+      if (!raf) raf = requestAnimationFrame(loop);
+    });
+    scroller.addEventListener('mouseleave', () => {
+      inside = false;
+      speed = 0;
+      edgeL.classList.remove('on');
+      edgeR.classList.remove('on');
+    });
+
+    updateBar();
+  });
+
+  // Flat list of all cells (across all phases) for prev/next navigation in the modal
+  const bgCells = Array.from(bgWrap.querySelectorAll('.bg-cell'));
+  const bgModal = document.getElementById('bgModal');
+  const bgImg = document.getElementById('bgImg');
+  const bgCapT = document.getElementById('bgCapT');
+  const bgCapS = document.getElementById('bgCapS');
+  let bgCur = 0;
+
+  function openBentoModal(index) {
+    bgCur = (index + bgCells.length) % bgCells.length;
+    const cell = bgCells[bgCur];
+    const img = cell.querySelector('img');
+    const capB = cell.querySelector('.bg-cap b');
+    const capSpan = cell.querySelector('.bg-cap span');
+    const phaseMeta = cell.closest('.bg-phase').querySelector('.bg-head span').textContent;
+    bgImg.src = img.src;
+    bgCapT.textContent = capB ? capB.textContent : '';
+    bgCapS.textContent = ` — ${capSpan ? capSpan.textContent : ''} · ${phaseMeta}`;
+    bgModal.classList.add('is-open');
+  }
+
+  function closeBentoModal() {
+    bgModal.classList.remove('is-open');
+  }
+
+  bgCells.forEach((cell, i) => {
+    cell.addEventListener('click', () => openBentoModal(i));
+  });
+  document.getElementById('bgClose').addEventListener('click', closeBentoModal);
+  document.getElementById('bgPrev').addEventListener('click', () => openBentoModal(bgCur - 1));
+  document.getElementById('bgNext').addEventListener('click', () => openBentoModal(bgCur + 1));
+  bgModal.addEventListener('click', (e) => {
+    if (e.target === bgModal) closeBentoModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!bgModal.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeBentoModal();
+    if (e.key === 'ArrowLeft') openBentoModal(bgCur - 1);
+    if (e.key === 'ArrowRight') openBentoModal(bgCur + 1);
+  });
+}
+
 // Siteplan scroll-linked scale (0.78 at bottom of viewport → 1.00 when centered) + caption trigger
 const siteplanScaler = document.querySelector('.siteplan-scaler');
 const siteplanCaption = document.querySelector('.siteplan-caption');
