@@ -9,3 +9,9 @@ Thumbs.db
 
 # Worktrees created for isolated task execution
 .worktrees/
+
+# Claude Code / Superpowers 작업 산출물 (목업·브레인스토밍·워크트리) — 배포 사이트와 무관
+.superpowers/
+.agents/
+.claude/worktrees/
+skills-lock.json

@@ -185,7 +185,10 @@ test('hero section shows the real 6cha facts, the corrected sale price, and no i
 });
 
 test('nav CTA reads "분양상담" and dials the real phone number; the redundant hero consult button is gone', () => {
-  assert.ok(html.includes('class="btn btn-accent chapter-nav-cta" href="tel:010-9347-1345">분양상담</a>'));
+  const navCta = html.slice(html.indexOf('class="btn btn-accent chapter-nav-cta"'), html.indexOf('</nav>'));
+  assert.ok(navCta.includes('href="tel:010-9347-1345"'), '내비 CTA는 실제 번호로 연결되어야 함');
+  assert.ok(navCta.includes('분양상담'));
+  assert.ok(navCta.includes('<svg'), 'B안 — 전화 아이콘이 붙어 있어야 함');
   assert.ok(!html.includes('hero-consult-link'), 'the duplicate hero consult button should be removed');
   assert.ok(!html.includes('hero-head-row'), 'the now-single-child wrapper row should be removed');
   const heroTitleMatches = html.match(/id="hero-title"/g) ?? [];
@@ -547,4 +550,93 @@ test('history modal data (js/script.js) covers phases 1-5 with a 4-photo gallery
   const galleryImages = [...phasesBlock.matchAll(/images\/history-modal-(\dcha)-(living|kitchen|dining|master)\.jpg/g)];
   assert.equal(galleryImages.length, 20, 'expected 4 gallery photos referenced across 5 phase entries (3차 reuses 2차 files)');
   assert.ok(phasesBlock.includes('galleryNote'), 'phase 3 should disclose that it reuses phase 2 photos');
+});
+
+
+test('promo popup script closes on CTA/backdrop/Escape and honors the dismiss-for-today flag', () => {
+  const js = readFileSync('js/script.js', 'utf8');
+  const block = js.match(/\/\/ Entry promo popup[\s\S]*$/)[0];
+  assert.ok(block.includes("data-promo-close"), 'backdrop and 닫기 버튼으로 닫혀야 함');
+  assert.ok(block.includes("data-promo-cta"), 'CTA 클릭 시 팝업이 닫혀야 함');
+  assert.ok(block.includes("e.key === 'Escape'"));
+  assert.ok(block.includes('markhill.promoDismissedUntil'));
+  assert.ok(!/preventDefault\(\)/.test(block), '팝업 스크립트는 tel: 기본 동작을 막지 않아야 함');
+});
+test('entry promo popup: 모델하우스 오픈이 메인, 아승공인중개사 표기는 하단', () => {
+  const popup = html.match(/<div class="promo-popup" id="promoPopup"[\s\S]*?\n<\/div>/)[0];
+  assert.ok(popup.includes('role="dialog"') && popup.includes('aria-modal="true"'));
+
+  // 히어로(메인) — 배경 사진 + 모델하우스 오픈
+  const hero = popup.match(/<header class="promo-hero">[\s\S]*?<\/header>/)[0];
+  assert.ok(hero.includes('images/promo-bg-4cha-living.jpg'), '4차 애월 거실 사진이 배경이어야 함');
+  assert.ok(existsSync('images/promo-bg-4cha-living.jpg'), '팝업 배경 이미지 파일이 존재해야 함');
+  assert.match(hero, /모델하우스/);
+  assert.match(hero, /OPEN/);
+  assert.match(hero, /2026\. 10/);
+
+  // 혜택
+  const head = popup.slice(popup.indexOf('<div class="promo-benefits-head">'), popup.indexOf('<ul class="promo-benefit-list">'));
+  assert.match(head, /모델하우스 오픈 전 계약 시 <b>한정 혜택<\/b>/);
+  assert.ok(head.includes('class="promo-blink"'), '한정 혜택 배너에 점멸 인디케이터가 있어야 함');
+  assert.match(popup, /TV · 세탁기 &amp; 건조기 증정/);
+  assert.match(popup, /줄눈 시공 및 전문 입주 청소 무상/);
+
+  // 하단 — 중개보수 0원 + 아승공인중개사 사인
+  const info = popup.match(/<div class="promo-info">[\s\S]*?\n    <\/div>/)[0];
+  assert.match(info, /마크힐은, <b>아승공인중개사<\/b>입니다/);
+  assert.ok(!/중개보수|0원|직거래/.test(popup), '중개보수 0원 안내는 팝업에서 제외됨');
+  assert.match(info, /분양대행 아승공인중개사/);
+  assert.ok(popup.indexOf(hero) < popup.indexOf(info), '모델하우스 오픈 블록이 중개보수 블록보다 위에 있어야 함');
+
+  const cta = popup.match(/<a class="promo-cta"[^>]*>/)[0];
+  assert.ok(cta.includes('href="tel:010-9347-1345"'), '방문예약 버튼은 전화로 바로 연결되어야 함');
+  assert.ok(cta.includes('data-promo-cta'));
+  assert.ok(popup.includes('id="promoDismissToday"'), '오늘 하루 보지 않기 체크박스');
+});
+
+test('promo popup CSS: 한정 혜택 배너는 크게 강조되고 점멸하며, 모션 최소화 설정에서는 멈춘다', () => {
+  const css = readFileSync('css/styles.css', 'utf8');
+  const label = css.match(/\.promo-benefits-label \{[\s\S]*?\}/)[0];
+  assert.match(label, /font-size: clamp\(14px, 4vw, 15\.5px\)/, '기존 12.5px보다 크게');
+  assert.match(label, /font-weight: 800/);
+  assert.ok(css.includes('@keyframes promoBlink'), '점멸 애니메이션');
+  assert.ok(css.includes('@keyframes promoBannerPulse'), '배너 강조 애니메이션');
+  const reduced = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
+  assert.match(reduced, /\.promo-benefits-head, \.promo-blink \{ animation: none !important; \}/);
+});
+
+test('hero A-1: 사진 위 문구 · 와이프 오픈 · 오른쪽 본문은 그대로', () => {
+  const photo = html.slice(html.indexOf('<div class="hero-photo-panel">'), html.indexOf('<div class="hero-content-panel">'));
+  assert.ok(photo.includes('class="hero-photo-clip"'), '사진은 클립 래퍼 안에 있어야 와이프 오픈이 가능');
+  assert.ok(photo.includes('images/history-5cha-penthouse.jpg'));
+  const tagAt = photo.indexOf('hero-photo-tag');
+  const overAt = photo.indexOf('hero-photo-over');
+  assert.ok(tagAt > -1 && overAt > -1 && tagAt < overAt, '시공 사례 라벨과 사진 위 문구가 모두 있어야 함');
+  assert.match(photo, /<i>마크힐은,<\/i>/);
+  assert.match(photo, /<span class="accent">마크힐<\/span>을 아는 곳에서/);
+  assert.ok(photo.includes('hero-over-rule'), '액센트 선');
+  assert.match(photo, /1차부터 함께한 <b>아승공인중개사<\/b>/);
+
+  // A-1은 오른쪽 본문을 줄이지 않고 그대로 둔다 (A-2와의 차이)
+  const copy = html.slice(html.indexOf('<p class="hero-copy">'), html.indexOf('</p>', html.indexOf('<p class="hero-copy">')));
+  assert.match(copy, /남건종합건설이/);
+  assert.match(copy, /아승공인중개사가/);
+  assert.match(copy, /함께합니다/);
+
+  assert.ok(html.includes('<span class="w"><i>마크힐 애월6차</i></span><span class="w accent"><i>분양</i></span>'), '워드마크 마스크 구조');
+});
+
+test('hero A-1 모션: 켄번즈 · 와이프 · 문구 지연시간, 그리고 모션 최소화 대응', () => {
+  const css = readFileSync('css/styles.css', 'utf8');
+  assert.ok(css.includes('@keyframes heroKenBurns'), '켄번즈 줌');
+  assert.match(css, /\.hero-split\.is-in \.hero-photo-clip \{ clip-path: inset\(0 0 0 0\); transition: clip-path 1\.05s/);
+  assert.match(css, /\.hero-over-line:nth-of-type\(1\) i \{ transition-delay: 0\.92s; \}/);
+  assert.match(css, /\.hero-over-line:nth-of-type\(2\) i \{ transition-delay: 1\.06s; \}/);
+  assert.match(css, /\.hero-over-rule \{ width: 46px; transition: width 0\.55s cubic-bezier\(0\.19, 1, 0\.22, 1\) 1\.42s; \}/);
+
+  const js = readFileSync('js/script.js', 'utf8');
+  assert.ok(js.includes("heroSplit?.classList.add('is-in')"), '진입 시 is-in 을 붙여 애니메이션을 시작');
+  assert.ok(js.includes("document.addEventListener('promo:done', startHeroEntrance"), '팝업이 닫힌 뒤에 히어로 시퀀스가 시작되어야 함');
+  assert.ok(js.includes('updateHeroParallax'), '스크롤 패럴랙스');
+  assert.ok(js.includes('heroPhotoImg.style.translate'), '켄번즈 transform 과 겹치지 않도록 translate 사용');
 });

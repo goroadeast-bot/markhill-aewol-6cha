@@ -85,22 +85,56 @@ function splitIntoWords(el, className) {
   el.innerHTML = words.map((word, i) => `<span class="${className}" style="--i:${i}">${word}</span>`).join(' ');
 }
 
-if (heroCopy && heroCardEls.length) {
-  heroCardEls.forEach((card) => {
-    const desc = card.querySelector('.hero-card-desc');
-    if (desc) splitIntoWords(desc, 'hero-card-word');
-  });
+heroCardEls.forEach((card) => {
+  const desc = card.querySelector('.hero-card-desc');
+  if (desc) splitIntoWords(desc, 'hero-card-word');
+});
+
+// Hero entrance (A-1) — 사진이 왼→오로 열린 뒤 사진 위 문구가 순서대로 올라온다
+const heroSplit = document.querySelector('.hero-split');
+let heroEntranceStarted = false;
+
+function startHeroEntrance() {
+  if (heroEntranceStarted) return;
+  heroEntranceStarted = true;
 
   if (reduceMotion) {
-    heroCopy.classList.add('is-visible');
+    heroSplit?.classList.add('is-in');
+    heroCopy?.classList.add('is-visible');
     heroCardEls.forEach((card) => card.classList.add('is-revealed'));
-  } else {
-    requestAnimationFrame(() => heroCopy.classList.add('is-visible'));
-    const copyDoneAt = 1240;
-    heroCardEls.forEach((card, i) => {
-      setTimeout(() => card.classList.add('is-revealed'), copyDoneAt + i * 220);
-    });
+    return;
   }
+
+  requestAnimationFrame(() => {
+    heroSplit?.classList.add('is-in');
+    heroCopy?.classList.add('is-visible');
+  });
+  const copyDoneAt = 1240;
+  heroCardEls.forEach((card, i) => {
+    setTimeout(() => card.classList.add('is-revealed'), copyDoneAt + i * 220);
+  });
+}
+
+// 진입 팝업이 히어로를 덮으므로, 팝업이 닫힌 뒤에 시퀀스를 시작한다
+if (document.getElementById('promoPopup') && !reduceMotion) {
+  document.addEventListener('promo:done', startHeroEntrance, { once: true });
+} else {
+  startHeroEntrance();
+}
+
+// Hero photo parallax — 스크롤에 따라 사진만 살짝 어긋나게 (켄번즈 transform과 겹치지 않도록 translate 사용)
+const heroPhotoImg = document.querySelector('.hero-photo-clip img');
+if (heroPhotoImg && !reduceMotion) {
+  const panel = heroPhotoImg.closest('.hero-photo-panel');
+  const updateHeroParallax = () => {
+    const rect = panel.getBoundingClientRect();
+    if (rect.top > window.innerHeight || rect.bottom < 0) return;
+    const progress = (rect.top + rect.height) / (window.innerHeight + rect.height);
+    heroPhotoImg.style.translate = `0 ${((0.5 - progress) * 46).toFixed(1)}px`;
+  };
+  window.addEventListener('scroll', updateHeroParallax, { passive: true });
+  window.addEventListener('resize', updateHeroParallax);
+  updateHeroParallax();
 }
 
 // Overview intro — repeats every time it scrolls into/out of view (not one-shot)
@@ -650,3 +684,59 @@ function observeReveals(root) {
 }
 
 observeReveals(document);
+
+// Entry promo popup — 사전 예약 안내. 방문예약 버튼은 tel: 링크라 모바일에서 바로 통화 연결된다.
+(() => {
+  const popup = document.getElementById('promoPopup');
+  if (!popup) return;
+
+  const DISMISS_KEY = 'markhill.promoDismissedUntil';
+  const dismissToday = document.getElementById('promoDismissToday');
+  let lastFocused = null;
+
+  function isDismissed() {
+    try {
+      const until = Number(localStorage.getItem(DISMISS_KEY));
+      return Number.isFinite(until) && until > Date.now();
+    } catch {
+      return false;
+    }
+  }
+
+  function openPromo() {
+    lastFocused = document.activeElement;
+    popup.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => popup.classList.add('is-open'));
+    popup.querySelector('.promo-popup-panel')?.focus();
+  }
+
+  function closePromo() {
+    if (dismissToday?.checked) {
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      try { localStorage.setItem(DISMISS_KEY, String(midnight.getTime())); } catch { /* 저장 실패 시 다음 방문에 다시 노출 */ }
+    }
+    popup.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(() => popup.setAttribute('aria-hidden', 'true'), 300);
+    if (lastFocused instanceof HTMLElement) lastFocused.focus();
+    document.dispatchEvent(new CustomEvent('promo:done'));
+  }
+
+  popup.addEventListener('click', (e) => {
+    if (e.target.closest('[data-promo-close]')) closePromo();
+    // 방문예약: 모바일은 tel: 기본 동작, 데스크톱은 기존 전화 모달이 이어받는다
+    if (e.target.closest('[data-promo-cta]')) closePromo();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && popup.getAttribute('aria-hidden') === 'false') closePromo();
+  });
+
+  if (isDismissed()) {
+    document.dispatchEvent(new CustomEvent('promo:done'));
+  } else {
+    setTimeout(openPromo, 700);
+  }
+})();

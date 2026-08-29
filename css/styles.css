@@ -138,7 +138,15 @@ a { color: inherit; text-decoration: none; }
 }
 .chapter-nav-list a:hover { color: var(--accent); }
 .chapter-nav-list a[aria-current="true"] { color: var(--accent); }
-.chapter-nav-cta { padding: 10px 18px; font-size: 14px; white-space: nowrap; }
+.chapter-nav-cta {
+  justify-content: center;
+  min-width: 168px;
+  padding: 12px 26px;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.chapter-nav-cta svg { flex: none; width: 16px; height: 16px; }
 
 main#pageContent { padding-top: 60px; }
 
@@ -198,14 +206,78 @@ main#pageContent { padding-top: 60px; }
 .scroll-top-btn:hover { background: var(--ink); }
 
 .hero-split-top { display: flex; min-height: 540px; }
-.hero-photo-panel { position: relative; width: 58%; flex-shrink: 0; overflow: hidden; }
-.hero-photo-panel img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.hero-photo-tag {
-  position: absolute; left: 20px; bottom: 20px;
-  background: rgba(26,24,21,0.72); color: var(--on-dark);
-  font-size: 11px; letter-spacing: 0.04em;
-  padding: 7px 14px; border-radius: 999px;
+.hero-photo-panel { position: relative; width: 58%; flex-shrink: 0; overflow: hidden; background: #221E1A; }
+
+/* 사진만 클리핑 — 위에 얹은 문구는 따로 움직인다 */
+.hero-photo-clip { position: absolute; inset: 0; overflow: hidden; clip-path: inset(0 100% 0 0); }
+.hero-split.is-in .hero-photo-clip { clip-path: inset(0 0 0 0); transition: clip-path 1.05s cubic-bezier(0.76, 0, 0.24, 1); }
+.hero-photo-clip img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transform: scale(1.06);
+  animation: heroKenBurns 26s ease-in-out infinite alternate;
 }
+@keyframes heroKenBurns {
+  0%   { transform: scale(1.06) translate3d(0, 0, 0); }
+  100% { transform: scale(1.14) translate3d(-1.4%, -1.2%, 0); }
+}
+/* 문구가 읽히도록 아래쪽을 어둡게 */
+.hero-photo-clip::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(20,18,16,0.84) 0%, rgba(20,18,16,0.5) 26%, rgba(20,18,16,0.1) 54%, transparent 74%);
+}
+
+.hero-photo-tag {
+  position: absolute; left: 22px; top: 20px; z-index: 4;
+  background: rgba(26,24,21,0.6);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: var(--on-dark);
+  font-size: 11px; letter-spacing: 0.04em;
+  padding: 6px 13px; border-radius: 999px;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.35s;
+}
+.hero-split.is-in .hero-photo-tag { opacity: 1; }
+
+/* 사진 위 문구 — 마크힐은, 마크힐을 아는 곳에서 */
+.hero-photo-over { position: absolute; left: 32px; right: 32px; bottom: 30px; z-index: 4; }
+.hero-over-line { display: block; overflow: hidden; }
+.hero-over-line i {
+  display: inline-block;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(21px, 2.35vw, 33px);
+  line-height: 1.24;
+  letter-spacing: -0.022em;
+  color: #fff;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.32);
+  white-space: nowrap;
+  transform: translateY(108%);
+}
+.hero-split.is-in .hero-over-line i { transform: translateY(0); transition: transform 0.85s cubic-bezier(0.19, 1, 0.22, 1); }
+.hero-split.is-in .hero-over-line:nth-of-type(1) i { transition-delay: 0.92s; }
+.hero-split.is-in .hero-over-line:nth-of-type(2) i { transition-delay: 1.06s; }
+.hero-over-line .accent { color: #E8A87C; }
+
+.hero-over-rule { height: 2px; width: 0; background: var(--accent); border-radius: 2px; margin: 15px 0 11px; }
+.hero-split.is-in .hero-over-rule { width: 46px; transition: width 0.55s cubic-bezier(0.19, 1, 0.22, 1) 1.42s; }
+
+.hero-over-sub {
+  font-size: 12.5px; letter-spacing: 0.01em;
+  color: rgba(248, 246, 242, 0.9);
+  opacity: 0; transform: translateY(9px); filter: blur(5px);
+}
+.hero-split.is-in .hero-over-sub {
+  opacity: 1; transform: none; filter: blur(0);
+  transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1) 1.55s,
+              transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) 1.55s,
+              filter 0.7s ease 1.55s;
+}
+.hero-over-sub b { color: #fff; font-weight: 700; }
 .hero-content-panel {
   width: 42%;
   display: flex; flex-direction: column; justify-content: center;
@@ -216,7 +288,11 @@ main#pageContent { padding-top: 60px; }
   font-family: var(--font-display); font-weight: 900;
   font-size: clamp(24px, 2.6vw, 32px); line-height: 1.15; letter-spacing: -0.01em;
 }
-.hero-wordmark span { display: block; color: var(--accent); }
+.hero-wordmark .w { display: block; overflow: hidden; }
+.hero-wordmark .w i { display: inline-block; font-style: normal; white-space: nowrap; transform: translateY(105%); }
+.hero-wordmark .w.accent i { color: var(--accent); }
+.hero-split.is-in .hero-wordmark .w i { transform: translateY(0); transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
+.hero-split.is-in .hero-wordmark .w.accent i { transition-delay: 0.09s; }
 
 .hero-head { display: flex; align-items: center; gap: 16px; }
 .hero-copy {
@@ -309,6 +385,12 @@ main#pageContent { padding-top: 60px; }
     opacity: 1; transform: none; filter: none;
   }
   .hero-copy::before { transform: scaleY(1); }
+  .hero-photo-clip, .hero-split.is-in .hero-photo-clip { clip-path: none !important; transition: none !important; }
+  .hero-photo-clip img { animation: none !important; transform: none !important; }
+  .hero-over-line i, .hero-wordmark .w i { transform: none !important; transition: none !important; }
+  .hero-over-sub { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+  .hero-over-rule { width: 46px !important; transition: none !important; }
+  .hero-photo-tag { opacity: 1 !important; transition: none !important; }
 }
 
 /* 역사 — 스티키 연도 레일 + 대형 사진 타임라인 */
@@ -928,14 +1010,20 @@ main#pageContent { padding-top: 60px; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 @media (max-width: 640px) {
-  .chapter-nav-list { gap: 14px; }
+  .chapter-nav-inner { gap: 12px; }
+  .chapter-nav-list .nav-long { display: none; }
+  .chapter-nav-list { gap: 13px; }
   .spec-table th { width: 110px; font-size: 13px; }
   .area-table, .price-table { font-size: 12px; }
   .area-table th, .price-table th, .area-table td, .price-table td { padding: 8px 6px; }
   .chapter-nav-brand { display: none; }
-  .chapter-nav-cta { padding: 8px 14px; font-size: 13px; }
+  .chapter-nav-cta { min-width: 120px; padding: 9px 18px; font-size: 13.5px; }
+  .chapter-nav-cta svg { width: 15px; height: 15px; }
   .hero-split-top { flex-direction: column; min-height: 0; }
   .hero-photo-panel { width: 100%; aspect-ratio: 4 / 3; }
+  .hero-photo-over { left: 20px; right: 20px; bottom: 20px; }
+  .hero-photo-tag { left: 16px; top: 14px; }
+  .hero-over-rule { margin: 11px 0 8px; }
   .hero-content-panel { width: 100%; padding: 28px 20px; }
   .hero-head { flex-direction: column; align-items: flex-start; gap: 10px; }
   .hero-card-desc { font-size: 10px; }
@@ -943,4 +1031,279 @@ main#pageContent { padding-top: 60px; }
   .hero-stat { width: 50%; flex: 0 0 50%; border-bottom: 1px solid var(--border); }
   .hero-stat:nth-child(2n) { border-right: none; }
   .scroll-top-btn { right: 12px; bottom: 16px; }
+}
+
+/* ── Entry promo popup ─────────────────────────────────────────── */
+.promo-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: none;
+  padding: 20px 16px;
+  overflow-y: auto;
+}
+.promo-popup[aria-hidden="false"] { display: block; }
+.promo-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 14, 12, 0.74);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.promo-popup.is-open .promo-popup-backdrop { opacity: 1; }
+
+.promo-popup-panel {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--dark-surface);
+  color: var(--on-dark);
+  border: 1px solid rgba(248, 246, 242, 0.12);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translateY(24px) scale(0.97);
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promo-popup.is-open .promo-popup-panel { opacity: 1; transform: none; }
+.promo-popup-panel:focus { outline: none; }
+
+.promo-close {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 4;
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border: 1px solid rgba(248, 246, 242, 0.28);
+  border-radius: 50%;
+  background: rgba(20, 18, 16, 0.45);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: rgba(248, 246, 242, 0.85);
+  font-size: 16px; line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.promo-close:hover { color: var(--on-dark); border-color: rgba(248, 246, 242, 0.6); }
+
+/* 1 — 메인: 모델하우스 오픈 (4차 애월 거실 사진 배경) */
+.promo-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 166px;
+  padding: 34px 24px 14px;
+  isolation: isolate;
+}
+.promo-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 50% 56%;
+}
+.promo-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(18, 15, 13, 0.72) 0%, rgba(18, 15, 13, 0.46) 42%, rgba(31, 27, 23, 0.97) 100%),
+    linear-gradient(90deg, rgba(18, 15, 13, 0.62) 0%, rgba(18, 15, 13, 0.14) 78%);
+}
+.promo-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+  font-size: 10.5px;
+  color: rgba(240, 196, 158, 0.95);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+}
+.promo-kicker .mono { letter-spacing: 0.15em; text-transform: uppercase; }
+.promo-kicker i { width: 11px; height: 1px; background: rgba(240, 196, 158, 0.55); }
+.promo-kicker-ko { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: rgba(248, 246, 242, 0.88); }
+
+.promo-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(28px, 7.4vw, 35px);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+.promo-title em {
+  display: block;
+  font-style: normal;
+  font-size: 0.6em;
+  letter-spacing: -0.02em;
+  color: rgba(248, 246, 242, 0.86);
+}
+.promo-when {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: baseline;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 6px 13px;
+  border: 1px solid rgba(240, 196, 158, 0.5);
+  border-radius: 999px;
+  background: rgba(181, 102, 58, 0.32);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.promo-when b { font-family: var(--font-mono); font-size: 14.5px; font-weight: 600; letter-spacing: 0.02em; }
+.promo-when span { font-size: 12px; color: rgba(248, 246, 242, 0.85); }
+
+/* 2 — 한정 혜택 (강조 배너 + 점멸) */
+.promo-benefits { padding: 12px 24px 0; }
+.promo-benefits-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 9px;
+  padding: 9px 12px;
+  border: 1px solid rgba(216, 154, 106, 0.4);
+  border-radius: 10px;
+  background: rgba(181, 102, 58, 0.16);
+  animation: promoBannerPulse 1.6s ease-in-out infinite;
+}
+.promo-blink {
+  flex: none;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #E7A877;
+  animation: promoBlink 1s steps(1, end) infinite;
+}
+.promo-benefits-label {
+  font-size: clamp(14px, 4vw, 15.5px);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: #F0C49E;
+  text-align: center;
+}
+.promo-benefits-label b { color: var(--on-dark); font-weight: 800; }
+
+@keyframes promoBlink {
+  0%, 49% { opacity: 1; transform: scale(1); }
+  50%, 100% { opacity: 0.18; transform: scale(0.82); }
+}
+@keyframes promoBannerPulse {
+  0%, 100% { border-color: rgba(216, 154, 106, 0.4); box-shadow: 0 0 0 0 rgba(216, 154, 106, 0); }
+  50% { border-color: rgba(240, 196, 158, 0.85); box-shadow: 0 0 16px 0 rgba(216, 154, 106, 0.3); }
+}
+
+.promo-benefit-list { list-style: none; display: grid; gap: 7px; }
+.promo-benefit {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 14px;
+  border: 1px solid rgba(248, 246, 242, 0.1);
+  border-radius: 10px;
+  background: rgba(248, 246, 242, 0.03);
+}
+.promo-benefit-no {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(216, 154, 106, 0.85);
+}
+.promo-benefit-body dt {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--on-dark-muted);
+  margin-bottom: 1px;
+}
+.promo-benefit-body dd { font-size: 14px; font-weight: 800; line-height: 1.3; }
+
+.promo-actions { padding: 12px 24px 14px; }
+.promo-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-dark);
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.promo-cta:hover { background: var(--accent-ink); transform: translateY(-1px); }
+.promo-cta .mono { font-weight: 600; font-size: 14.5px; opacity: 0.92; }
+.promo-cta-sub {
+  margin-top: 7px;
+  text-align: center;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-subtle);
+  text-wrap: balance;
+}
+.promo-cta-sub b { color: var(--on-dark-muted); font-weight: 700; }
+
+/* 3 — 하단: 아승공인중개사 */
+.promo-info {
+  padding: 12px 24px;
+  border-top: 1px solid rgba(248, 246, 242, 0.1);
+  background: rgba(0, 0, 0, 0.24);
+}
+.promo-sign { font-size: 12.5px; color: var(--on-dark-muted); margin-bottom: 3px; }
+.promo-sign b { color: rgba(240, 196, 158, 0.95); font-weight: 700; }
+.promo-agency { font-size: 10.5px; line-height: 1.5; color: var(--ink-subtle); }
+
+.promo-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 24px;
+  border-top: 1px solid rgba(248, 246, 242, 0.1);
+}
+.promo-foot button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--ink-subtle);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.promo-foot button:hover { color: var(--on-dark); }
+.promo-dismiss { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-subtle); }
+.promo-dismiss input { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+
+@media (max-width: 480px) {
+  .promo-popup { padding: 14px 12px; }
+  .promo-hero { min-height: 168px; padding: 34px 18px 14px; }
+  .promo-benefits, .promo-actions, .promo-info, .promo-foot { padding-left: 18px; padding-right: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-popup-backdrop, .promo-popup-panel { transition: none !important; }
+  .promo-popup-panel { transform: none; }
+  .promo-benefits-head, .promo-blink { animation: none !important; }
+}
+
+/* 초소형 화면(320px대) — 메뉴 4개와 분양상담 버튼이 모두 들어가도록 한 단계 더 압축 */
+@media (max-width: 360px) {
+  .chapter-nav-inner { padding: 10px 16px; gap: 10px; }
+  .chapter-nav-list { gap: 11px; }
+  .chapter-nav-list a { font-size: 13px; }
+  .chapter-nav-cta { min-width: 104px; padding: 9px 14px; font-size: 13px; }
+  .chapter-nav-cta svg { width: 14px; height: 14px; }
 }
