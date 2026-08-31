@@ -1048,6 +1048,8 @@ main#pageContent { padding-top: 60px; }
 
 .chapter-dark { background: var(--dark-surface); color: var(--on-dark); }
 .contact-block { text-align: center; padding: 40px 0; }
+/* section-lede 는 max-width 만 있어 가운데 정렬 블록 안에서 왼쪽으로 치우친다 */
+.contact-block .section-lede { margin-left: auto; margin-right: auto; }
 .contact-card {
   margin: 32px auto 0;
   max-width: 420px;
