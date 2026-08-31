@@ -641,6 +641,9 @@ test('hero A-1: 사진 위 문구 · 와이프 오픈 · 오른쪽 본문은 그
 test('hero A-1 모션: 켄번즈 · 와이프 · 문구 지연시간, 그리고 모션 최소화 대응', () => {
   const css = readFileSync('css/styles.css', 'utf8');
   assert.ok(css.includes('@keyframes heroKenBurns'), '켄번즈 줌');
+  assert.match(css, /animation: heroKenBurns 6.5s ease-in-out infinite;/, 'D안 · 4배속(26s→6.5s), alternate 없이 한 주기로 왕복');
+  assert.ok(css.includes('0%, 100% { transform: scale(1.06) translate3d(0, 0, 0); }'), '패럴랙스가 가장자리를 드러내지 않도록 확대 여유분 유지');
+  assert.ok(css.includes('50%      { transform: scale(1.19) translate3d(-1.6%, -1.3%, 0); }'), '확대 폭 13%');
   assert.match(css, /\.hero-split\.is-in \.hero-photo-clip \{ clip-path: inset\(0 0 0 0\); transition: clip-path 1\.05s/);
   assert.match(css, /\.hero-over-line:nth-of-type\(1\) i \{ transition-delay: 0\.92s; \}/);
   assert.match(css, /\.hero-over-line:nth-of-type\(2\) i \{ transition-delay: 1\.06s; \}/);
@@ -650,6 +653,7 @@ test('hero A-1 모션: 켄번즈 · 와이프 · 문구 지연시간, 그리고 
   assert.ok(js.includes("heroSplit?.classList.add('is-in')"), '진입 시 is-in 을 붙여 애니메이션을 시작');
   assert.ok(js.includes("document.addEventListener('promo:done', startHeroEntrance"), '팝업이 닫힌 뒤에 히어로 시퀀스가 시작되어야 함');
   assert.ok(js.includes('updateHeroParallax'), '스크롤 패럴랙스');
+  assert.ok(js.includes("* 4).toFixed(2)}%"), '패럴랙스는 px 이 아니라 패널 높이 대비 비율(±2%)이어야 함');
   assert.ok(js.includes('heroPhotoImg.style.translate'), '켄번즈 transform 과 겹치지 않도록 translate 사용');
 });
 

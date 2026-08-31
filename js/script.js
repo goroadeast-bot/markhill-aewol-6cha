@@ -130,7 +130,8 @@ if (heroPhotoImg && !reduceMotion) {
     const rect = panel.getBoundingClientRect();
     if (rect.top > window.innerHeight || rect.bottom < 0) return;
     const progress = (rect.top + rect.height) / (window.innerHeight + rect.height);
-    heroPhotoImg.style.translate = `0 ${((0.5 - progress) * 46).toFixed(1)}px`;
+    // 패널 높이 대비 비율로 움직여야 뷰포트가 달라져도 확대 여유분 안에 머문다
+    heroPhotoImg.style.translate = `0 ${((0.5 - progress) * 4).toFixed(2)}%`;
   };
   window.addEventListener('scroll', updateHeroParallax, { passive: true });
   window.addEventListener('resize', updateHeroParallax);
