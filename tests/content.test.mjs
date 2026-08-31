@@ -652,3 +652,10 @@ test('hero A-1 모션: 켄번즈 · 와이프 · 문구 지연시간, 그리고 
   assert.ok(js.includes('updateHeroParallax'), '스크롤 패럴랙스');
   assert.ok(js.includes('heroPhotoImg.style.translate'), '켄번즈 transform 과 겹치지 않도록 translate 사용');
 });
+
+test('푸터에 아승공인중개사 사무소 주소가 표시된다', () => {
+  const footer = html.match(/<footer class="site-footer">[\s\S]*?<\/footer>/)[0];
+  assert.match(footer, /사무소 제주시 노형3길 21-1 2층/);
+  // 등록번호 바로 아래에 와야 한다 (현장 주소와 헷갈리지 않도록 "사무소" 라벨 유지)
+  assert.ok(footer.indexOf('50110-2019-00164') < footer.indexOf('사무소'));
+});
