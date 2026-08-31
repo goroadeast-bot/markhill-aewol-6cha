@@ -386,8 +386,8 @@ test('gallery chapter has a bento row per phase (1-5차) plus the existing 6차 
   for (const phase of ['1차', '2차', '3차', '4차', '5차']) {
     assert.ok(galleryBlock.includes(`<b>${phase}</b>`), `missing bg-head label for ${phase}`);
   }
-  assert.ok(galleryBlock.includes('6차 · 애월읍 하귀2리 · 착공 전'));
-  assert.ok(galleryBlock.includes('착공 전으로 실제 인테리어 사진이 아직 없습니다'));
+  assert.ok(galleryBlock.includes('6차 · 애월읍 하귀2리 · 공사중'));
+  assert.ok(galleryBlock.includes('공사중으로 실제 인테리어 사진이 아직 없습니다'));
 });
 
 test('gallery bento has exactly 70 real photos (14 per phase, 1-5차) with cursor-driven auto-scroll and a click-to-enlarge modal', () => {
