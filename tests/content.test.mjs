@@ -641,7 +641,7 @@ test('hero A-1: 사진 위 문구 · 와이프 오픈 · 오른쪽 본문은 그
 test('hero A-1 모션: 켄번즈 · 와이프 · 문구 지연시간, 그리고 모션 최소화 대응', () => {
   const css = readFileSync('css/styles.css', 'utf8');
   assert.ok(css.includes('@keyframes heroKenBurns'), '켄번즈 줌');
-  assert.match(css, /animation: heroKenBurns 6.5s ease-in-out infinite;/, 'D안 · 4배속(26s→6.5s), alternate 없이 한 주기로 왕복');
+  assert.match(css, /animation: heroKenBurns 8.7s ease-in-out infinite;/, 'D안 · 3배속(26s→8.7s), alternate 없이 한 주기로 왕복');
   assert.ok(css.includes('0%, 100% { transform: scale(1.06) translate3d(0, 0, 0); }'), '패럴랙스가 가장자리를 드러내지 않도록 확대 여유분 유지');
   assert.ok(css.includes('50%      { transform: scale(1.19) translate3d(-1.6%, -1.3%, 0); }'), '확대 폭 13%');
   assert.match(css, /\.hero-split\.is-in \.hero-photo-clip \{ clip-path: inset\(0 0 0 0\); transition: clip-path 1\.05s/);

@@ -216,7 +216,7 @@ main#pageContent { padding-top: 60px; }
   width: 100%; height: 100%;
   object-fit: cover; display: block;
   transform: scale(1.06);
-  animation: heroKenBurns 6.5s ease-in-out infinite;
+  animation: heroKenBurns 8.7s ease-in-out infinite;
 }
 /* D안 — 천천히 확대되며 살짝 밀렸다가 정확히 원위치로 복귀.
    0%/100% 의 1.06 은 스크롤 패럴랙스(±2%)가 사진 가장자리를 드러내지 않도록 둔 여유분이다. */
