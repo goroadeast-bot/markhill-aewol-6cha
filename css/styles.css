@@ -396,6 +396,7 @@ main#pageContent { padding-top: 60px; }
 /* 역사 — 스티키 연도 레일 + 대형 사진 타임라인 */
 .htl { display: grid; grid-template-columns: 250px 1fr; gap: 40px; margin-top: 40px; }
 .htl-rail { position: sticky; top: 88px; align-self: start; }
+.htl-rail-top { display: contents; }
 .htl-year {
   font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 52px; line-height: 1;
   color: var(--ink); letter-spacing: -0.03em; margin-bottom: 8px;
@@ -441,11 +442,49 @@ main#pageContent { padding-top: 60px; }
   .htl-photo img, .htl-year, .htl-place, .htl-bar i { transition: none !important; }
 }
 @media (max-width: 720px) {
-  .htl { grid-template-columns: 1fr; gap: 24px; }
-  .htl-rail { position: static; }
-  .htl-year { font-size: 40px; }
+  /* 단일 컬럼 그리드에서는 레일이 자기 행 안에만 붙어 있어 스크롤하면 사라진다.
+     flex 로 바꾸고 레일을 해체해, 년도 바가 섹션 전체에 걸쳐 따라오게 한다. */
+  .htl { display: flex; flex-direction: column; gap: 0; }
+  .htl-rail { display: contents; }
+  .htl-items { order: 0; }
+
+  .htl-rail-top {
+    order: -1;
+    position: sticky;
+    top: 86px;   /* 내비 78px + 여백 8px */
+    z-index: 20;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "year count" "place place" "bar bar";
+    align-items: baseline;
+    column-gap: 12px;
+    margin-bottom: 22px;
+    padding: 11px 15px 13px;
+    background: rgba(248, 246, 242, 0.95);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(26, 24, 21, 0.07);
+  }
+  .htl-year { grid-area: year; font-size: 30px; margin-bottom: 0; }
+  .htl-place { grid-area: place; margin-bottom: 0; font-size: 12.5px; }
+  .htl-count { grid-area: count; margin-bottom: 0; justify-self: end; }
+  .htl-count b { font-size: 13px; }
+  .htl-bar { grid-area: bar; margin: 10px 0 0; }
+
+  .htl-total { order: 1; margin-top: 26px; }
+
   .htl-item { margin-bottom: 40px; }
   .htl-photo { height: 210px; }
+}
+
+@media (max-width: 640px) {
+  .htl-rail-top { top: 78px; }   /* 내비 70px + 8px */
+}
+
+@media (max-width: 360px) {
+  .htl-rail-top { top: 69px; }   /* 내비 61px + 8px */
 }
 
 /* 1~5차 카드를 클릭하면 뜨는 상세 모달 (markhill_blog 원문 정리 내용) */
