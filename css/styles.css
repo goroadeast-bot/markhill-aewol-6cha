@@ -986,6 +986,25 @@ main#pageContent { padding-top: 60px; }
 .gallery-group-current .gallery-row { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .gallery-note { margin-top: 12px; font-size: 13px; color: var(--ink-subtle); }
 
+/* 분양가 — 금액 대신 상담 유도 */
+.price-ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  color: var(--accent-ink);
+  white-space: nowrap;
+}
+.price-ask::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.price-disclaimer b { color: var(--ink); font-weight: 700; }
+
 .chapter-dark { background: var(--dark-surface); color: var(--on-dark); }
 .contact-block { text-align: center; padding: 40px 0; }
 .contact-card {

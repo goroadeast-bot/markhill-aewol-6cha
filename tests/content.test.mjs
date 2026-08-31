@@ -304,11 +304,23 @@ test('rooftop bento grid has 4 real photos, a mask-reveal title, and a count-up 
 });
 
 test('types & pricing chapter carries the exact official figures and disclaimer', () => {
-  assert.ok(html.includes('45,800'));
-  assert.ok(html.includes('51,300'));
   assert.ok(html.includes('오션뷰(간섭없음)'));
   assert.ok(html.includes('2026.06.22 기준'));
   assert.ok(html.includes('변동될 수 있습니다'));
+  assert.ok(html.includes('전화 상담으로 안내해 드립니다'), '금액을 감췄으므로 상담 안내가 있어야 함');
+});
+
+test('분양가는 표에 금액으로 적지 않고 상담으로 유도한다', () => {
+  const priceTable = html.match(/<table class="price-table">[\s\S]*?<\/table>/)[0];
+  const asks = [...priceTable.matchAll(/<span class="price-ask">상담필요<\/span>/g)];
+  assert.equal(asks.length, 9, '8세대 + 근생 1행, 모두 상담필요여야 함');
+
+  // 지난 분양가가 표에 남아 있으면 안 된다
+  for (const amount of ['45,800', '47,500', '49,300', '51,300', '44,800', '10,000~16,000']) {
+    assert.ok(!priceTable.includes(amount), `분양가 표에 ${amount} 이 남아 있음`);
+  }
+  // 금액을 지웠으므로 (만원) 단위 표기도 없어야 한다
+  assert.ok(priceTable.includes('<th>분양가</th>'), '헤더에서 (만원) 단위를 떼야 함');
 });
 
 test('price table rows carry the exact 동/층/가격/조망 combination together, not just anywhere on the page', () => {
@@ -316,22 +328,22 @@ test('price table rows carry the exact 동/층/가격/조망 combination togethe
   const rows = [...priceTableBlock.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map((m) => m[0]);
 
   const expectedRows = [
-    { dong: '101동', floor: '1층', price: '45,800', view: '자연뷰(간섭없음)/한라산뷰(일부간섭)' },
-    { dong: '101동', floor: '4층', price: '51,300', view: '자연뷰(간섭없음)/한라산뷰(일부간섭)' },
-    { dong: '102동', floor: '1층', price: '44,800', view: '오션뷰(일부간섭)' },
-    { dong: '102동', floor: '4층', price: '51,300', view: '오션뷰(간섭없음)' },
+    { dong: '101동', floor: '1층', view: '자연뷰(간섭없음)/한라산뷰(일부간섭)' },
+    { dong: '101동', floor: '4층', view: '자연뷰(간섭없음)/한라산뷰(일부간섭)' },
+    { dong: '102동', floor: '1층', view: '오션뷰(일부간섭)' },
+    { dong: '102동', floor: '4층', view: '오션뷰(간섭없음)' },
   ];
 
   for (const expected of expectedRows) {
     const matchingRow = rows.find((row) =>
       row.includes(`<td>${expected.dong}</td>`) &&
       row.includes(`>${expected.floor}</td>`) &&
-      row.includes(`>${expected.price}</td>`) &&
+      row.includes('<span class="price-ask">상담필요</span>') &&
       row.includes(expected.view)
     );
     assert.ok(
       matchingRow,
-      `expected a price-table row with ${expected.dong}/${expected.floor}/${expected.price}/${expected.view} all together`
+      `expected a price-table row with ${expected.dong}/${expected.floor}/상담필요/${expected.view} all together`
     );
   }
 });
