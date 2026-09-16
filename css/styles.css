@@ -782,6 +782,7 @@ main#pageContent { padding-top: 60px; }
 @media (prefers-reduced-motion: reduce) {
   .rooftop-note-hl { background-size: 100% 100% !important; transition: none !important; }
 }
+
 .area-table, .price-table {
   width: 100%;
   border-collapse: collapse;
@@ -800,6 +801,42 @@ main#pageContent { padding-top: 60px; }
   border-bottom: 1px solid var(--border);
 }
 .area-table td:first-child, .price-table td:first-child { font-weight: 700; color: var(--ink); }
+
+/* 서비스면적(발코니 확장) — 형광펜 스윕 강조 */
+.area-block { margin: 24px 0 32px; }
+.area-lede {
+  margin: 0 0 4px;
+  font-size: 16px; line-height: 1.75; color: var(--ink-muted);
+}
+.area-lede-hl, .svc-hl {
+  position: relative;
+  font-weight: 800; color: var(--ink);
+  background-image: linear-gradient(rgba(181, 102, 58, 0.34), rgba(181, 102, 58, 0.34));
+  background-repeat: no-repeat;
+  background-position: 0 86%;
+  background-size: 0% 62%;
+  padding: 0 4px; border-radius: 2px;
+}
+.area-lede-hl { color: var(--accent-ink); }
+.area-block.is-visible .area-lede-hl,
+.area-block.is-visible .svc-hl {
+  background-size: 100% 62%;
+  transition: background-size 0.75s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.area-lede-hl-2 { transition-delay: 0.35s; }
+.area-table-svc .svc-col { background: rgba(181, 102, 58, 0.05); }
+.area-table-svc th.svc-col { background: rgba(181, 102, 58, 0.12); }
+.svc-hl-head { font-size: inherit; white-space: nowrap; }
+.area-table-svc td.svc-col .svc-hl { font-size: 15px; letter-spacing: -0.01em; }
+.area-foot { margin: 6px 0 0; font-size: 13px; line-height: 1.7; color: var(--ink-subtle); }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (prefers-reduced-motion: reduce) {
+  .area-lede-hl, .svc-hl { background-size: 100% 62% !important; transition: none !important; }
+}
+@media (max-width: 720px) {
+  .area-lede { font-size: 15px; }
+  .table-scroll .area-table-svc { min-width: 600px; }
+}
 .types-intro > .eyebrow, .types-intro > .section-title {
   opacity: 0;
   transform: translateY(14px);
@@ -816,6 +853,16 @@ main#pageContent { padding-top: 60px; }
   .types-intro > .eyebrow, .types-intro > .section-title { opacity: 1; transform: none; filter: none; }
 }
 .price-disclaimer { font-size: 13px; color: var(--ink-subtle); margin-bottom: 32px; }
+
+/* 비법정단위(평) 병행 표기 고지 — 타입&가격 섹션 맨 아래 */
+.unit-notice {
+  margin: 28px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px; line-height: 1.7;
+  color: var(--ink-subtle);
+}
+.unit-notice b { font-weight: 800; color: var(--ink-muted); }
 .terms-block { display: grid; gap: 8px; font-size: 15px; }
 .terms-hl {
   position: relative;

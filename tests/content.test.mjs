@@ -83,10 +83,11 @@ const requiredImages = [
   'images/gallery-bento-5cha-12.jpg',
   'images/gallery-bento-5cha-13.jpg',
   'images/gallery-bento-5cha-14.jpg',
-  'images/rooftop-01-lounge.jpg',
-  'images/rooftop-02-night.jpg',
-  'images/rooftop-03-pet.jpg',
-  'images/rooftop-04-yoga.jpg',
+  'images/6cha-pet-ground-01.jpg',
+  'images/6cha-pet-ground-02.jpg',
+  'images/6cha-pet-ground-03.jpg',
+  'images/6cha-progress-01.jpg',
+  'images/6cha-progress-02.jpg',
   'images/6cha-location.jpg',
   'images/6cha-siteplan.jpg',
   'images/icon-overview.jpeg',
@@ -230,7 +231,7 @@ test('history chapter covers all 6 phases with real facts', () => {
   assert.ok(html.includes('제주사회복지공동모금회'));
   assert.ok(html.includes('보이드 구조'));
   assert.ok(html.includes('2025.7.17'));
-  assert.ok(html.includes('옥탑 선셋라운지'));
+  assert.ok(html.includes('지상 펫플레이그라운드'));
 });
 
 test('history timeline pairs each phase with its real year, place, and photo', () => {
@@ -256,7 +257,7 @@ test('history timeline pairs each phase with its real year, place, and photo', (
     'images/history-3cha.jpg',
     'images/history-4cha.jpg',
     'images/history-5cha-penthouse.jpg',
-    'images/rooftop-01-lounge.jpg',
+    'images/6cha-pet-ground-01.jpg',
   ]) {
     assert.ok(historyBlock.includes(`src="${img}"`), `expected ${img} in the history timeline`);
   }
@@ -276,31 +277,55 @@ test('history rail totals only the delivered phases (1~5차), excluding the unbu
 test('overview chapter states the official project facts', () => {
   assert.ok(html.includes('하귀2리 2089번지'));
   assert.ok(html.includes('84타입 20세대'));
-  assert.ok(html.includes('2026년 10월 샘플하우스 오픈'));
+  assert.ok(html.includes('2026년 11월 샘플하우스 오픈'));
+  assert.ok(html.includes('골조공사 완료'));
   assert.ok(html.includes('2027년 7월 입주') && html.includes('예정'));
   assert.ok(html.includes('images/6cha-siteplan.jpg'));
 });
 
 test('premium chapter lists real 6cha amenities', () => {
   assert.ok(html.includes('2.93kw'));
-  assert.ok(html.includes('선셋라운지'));
+  assert.ok(html.includes('펫플레이그라운드'));
   assert.ok(html.includes('마크힐센터'));
+  assert.ok(html.includes('요가&amp;스트레칭존'));
 });
 
-test('rooftop bento grid has 4 real photos, a mask-reveal title, and a count-up stat tile', () => {
+test('rooftop bento grid shows the 2026.09 revised plan, a mask-reveal title, and a count-up stat tile', () => {
   const rooftopBlock = html.match(/<div class="rooftop-intro">[\s\S]*?<p class="rooftop-note"[\s\S]*?<\/p>/)[0];
   for (const img of [
-    'images/rooftop-01-lounge.jpg',
-    'images/rooftop-02-night.jpg',
-    'images/rooftop-03-pet.jpg',
-    'images/rooftop-04-yoga.jpg',
+    'images/6cha-pet-ground-01.jpg',
+    'images/6cha-pet-ground-03.jpg',
+    'images/premium-05-center.jpg',
+    'images/6cha-pet-ground-02.jpg',
   ]) {
     assert.ok(rooftopBlock.includes(`src="${img}"`), `expected ${img} in the rooftop bento grid`);
   }
   const words = [...rooftopBlock.matchAll(/<span class="rt-word"><i[^>]*>([^<]+)<\/i><\/span>/g)].map((m) => m[1]);
-  assert.deepEqual(words, ['옥탑', '전체를,', '주민에게']);
+  assert.deepEqual(words, ['옥탑은', '태양광에,', '시설은', '지상으로']);
   assert.ok(rooftopBlock.includes('id="rooftopNum"'));
-  assert.ok(rooftopBlock.includes('<p class="rooftop-note" id="rooftopNote">* 이해를 돕기 위한 <span class="rooftop-note-hl">참고용 이미지</span>입니다.</p>'));
+  assert.ok(rooftopBlock.includes('시공사 제공 자료'), 'rooftop images must be labelled as builder-supplied plan material');
+  assert.ok(!rooftopBlock.includes('rt-change'), '계획 변경 이력은 노출하지 않는다');
+  assert.ok(!html.includes('남건휴먼스 공식 블로그'), '블로그 출처 표기는 넣지 않는다');
+});
+
+test('types chapter discloses that 평 is a non-statutory unit shown alongside ㎡', () => {
+  const typesBlock = html.match(/<section class="chapter" id="types"[\s\S]*?<\/section>/)[0];
+  assert.ok(typesBlock.includes('class="unit-notice"'), '평 병행표기 고지가 타입&가격 섹션에 있어야 한다');
+  assert.ok(typesBlock.includes('비법정단위'));
+  assert.ok(typesBlock.includes('병행 표기'));
+  const noticeAt = typesBlock.indexOf('class="unit-notice"');
+  assert.ok(noticeAt > typesBlock.indexOf('class="price-table"'), '고지는 표 아래에 와야 한다');
+});
+
+test('area table exposes the balcony service area with a highlighter sweep', () => {
+  const areaBlock = html.match(/<div class="area-block" id="areaBlock">[\s\S]*?<\/table>\s*<\/div>/)[0];
+  assert.ok(areaBlock.includes('서비스면적(㎡)'));
+  assert.ok(areaBlock.includes('실사용(㎡)'));
+  // 분양안내자료 2026.06.22 기준 발코니 면적
+  const svc = [...areaBlock.matchAll(/<span class="svc-hl"[^>]*>([\d.]+)<\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(svc, ['33.8', '33.8', '33.2']);
+  assert.ok(areaBlock.includes('118.6') && areaBlock.includes('117.6'));
+  assert.ok(areaBlock.includes('svc-hl-head'), '표 머리글에도 형광펜 강조가 있어야 한다');
 });
 
 test('types & pricing chapter carries the exact official figures and disclaimer', () => {
@@ -387,7 +412,7 @@ test('gallery chapter has a bento row per phase (1-5차) plus the existing 6차 
     assert.ok(galleryBlock.includes(`<b>${phase}</b>`), `missing bg-head label for ${phase}`);
   }
   assert.ok(galleryBlock.includes('6차 · 애월읍 하귀2리 · 공사중'));
-  assert.ok(galleryBlock.includes('공사중으로 실제 인테리어 사진이 아직 없습니다'));
+  assert.ok(galleryBlock.includes('공사중으로 실제 인테리어 사진이 아직 없으며'));
 });
 
 test('gallery bento has exactly 70 real photos (14 per phase, 1-5차) with cursor-driven auto-scroll and a click-to-enlarge modal', () => {
@@ -448,7 +473,7 @@ test('each hero card carries a one-line description grounded in real facts, plus
     '84타입 20세대 · 근생 4실',
     '하귀초·귀일중 도보 통학',
     '4.48억~5.13억',
-    '전세대 태양광 · 선셋라운지',
+    '전세대 태양광 · 펫플레이그라운드',
   ];
   cardBlocks.forEach((block, i) => {
     assert.ok(block.includes(`class="hero-card-desc"`), `card ${i} must have a hero-card-desc`);
@@ -492,8 +517,8 @@ test('page declares an explicit light color-scheme so mobile dark-mode browsers 
 
 test('types intro wraps only the eyebrow and title — the tables are untouched', () => {
   const typesBlock = html.match(/<section class="chapter" id="types"[\s\S]*?<\/section>/)[0];
-  const introMatch = typesBlock.match(/<div class="types-intro">([\s\S]*?)<\/div>\s*<table class="area-table">/);
-  assert.ok(introMatch, 'expected a <div class="types-intro"> wrapping the eyebrow/title, immediately followed by <table class="area-table">');
+  const introMatch = typesBlock.match(/<div class="types-intro">([\s\S]*?)<\/div>\s*<div class="area-block"/);
+  assert.ok(introMatch, 'expected a <div class="types-intro"> wrapping the eyebrow/title, immediately followed by <div class="area-block">');
   const introInner = introMatch[1];
   assert.ok(introInner.includes('class="eyebrow"'));
   assert.ok(introInner.includes('class="section-title"'));

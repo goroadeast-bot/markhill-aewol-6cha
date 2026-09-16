@@ -180,6 +180,20 @@ if (typesIntro) {
   typesObserver.observe(typesIntro);
 }
 
+// 서비스면적 형광펜 — 표가 보이면 왼쪽에서 오른쪽으로 칠해지고, 벗어나면 되돌아간다
+const areaBlock = document.getElementById('areaBlock');
+if (areaBlock) {
+  const areaObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      }
+    },
+    { threshold: 0.25 }
+  );
+  areaObserver.observe(areaBlock);
+}
+
 // Terms block — sweep-highlight the key figures in order, staggered 160ms apart, repeats
 const termsBlock = document.querySelector('.terms-block');
 if (termsBlock) {
@@ -289,7 +303,7 @@ if (rooftopBento) {
   }
 }
 
-// Rooftop note — sweep-highlight "참고용 이미지", repeats on scroll in/out
+// Rooftop note — sweep-highlight "시공사 제공 자료", repeats on scroll in/out
 const rooftopNote = document.getElementById('rooftopNote');
 if (rooftopNote) {
   const rooftopNoteObserver = new IntersectionObserver(
