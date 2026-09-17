@@ -180,18 +180,27 @@ if (typesIntro) {
   typesObserver.observe(typesIntro);
 }
 
-// 서비스면적 형광펜 — 표가 보이면 왼쪽에서 오른쪽으로 칠해지고, 벗어나면 되돌아간다
+// 서비스면적 형광펜 — 표가 보이면 왼쪽에서 오른쪽으로 칠해지고, 벗어나면 되돌아간다.
+// 관찰 대상은 블록이 아니라 표를 감싼 가로 스크롤 상자다.
+// 블록은 리드 문구로 시작하므로 블록을 관찰하면 리드만 걸쳐도 스윕이 시작되고,
+// 표가 화면 아래 끝에 겨우 닿은 시점에 이미 끝나버린다.
+// 그렇다고 표 자체를 관찰하면 좁은 화면에서 영영 발동하지 않는다. 표는 600px 고정폭이라
+// 스크롤 상자에 가로로 잘리는데, IntersectionObserver 는 조상의 클리핑까지 비율에 곱한다.
+// 320px 화면에서는 표가 세로로 다 보여도 비율이 0.45를 넘지 못해 0.5 문턱에 닿지 못한다.
+// 스크롤 상자는 가로로 잘리지 않으므로 비율이 세로 노출만 따른다.
 const areaBlock = document.getElementById('areaBlock');
-if (areaBlock) {
+const areaTable = areaBlock?.querySelector('.table-scroll');
+if (areaBlock && areaTable) {
   const areaObserver = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
-        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+        areaBlock.classList.toggle('is-visible', entry.isIntersecting);
       }
     },
-    { threshold: 0.25 }
+    // 화면 아래 28%를 잘라내고, 표가 절반 넘게 들어왔을 때 비로소 칠하기 시작한다
+    { rootMargin: '0px 0px -28% 0px', threshold: 0.5 }
   );
-  areaObserver.observe(areaBlock);
+  areaObserver.observe(areaTable);
 }
 
 // Terms block — sweep-highlight the key figures in order, staggered 160ms apart, repeats
