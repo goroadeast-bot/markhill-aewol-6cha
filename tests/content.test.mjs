@@ -104,8 +104,11 @@ const requiredImages = [
   'images/premium-02-kitchen.jpg',
   'images/premium-03-door.jpg',
   'images/premium-04-sprinkler.jpg',
-  'images/premium-05-center.jpg',
   'images/premium-06-bath.jpg',
+  'images/6cha-center-01.jpg',
+  'images/6cha-center-02.jpg',
+  'images/6cha-center-03.jpg',
+  'images/6cha-center-04.jpg',
   'images/history-modal-1cha-living.jpg',
   'images/history-modal-1cha-kitchen.jpg',
   'images/history-modal-1cha-dining.jpg',
@@ -277,10 +280,30 @@ test('history rail totals only the delivered phases (1~5차), excluding the unbu
 test('overview chapter states the official project facts', () => {
   assert.ok(html.includes('하귀2리 2089번지'));
   assert.ok(html.includes('84타입 20세대'));
-  assert.ok(html.includes('2026년 11월 샘플하우스 오픈'));
+  assert.ok(html.includes('2026년 11월 모델하우스 오픈'));
   assert.ok(html.includes('골조공사 완료'));
   assert.ok(html.includes('2027년 7월 입주') && html.includes('예정'));
   assert.ok(html.includes('images/6cha-siteplan.jpg'));
+});
+
+// 6차 오픈 행사는 팝업·개요·계약조건에서 모두 "모델하우스"로 부른다.
+// 4차 연혁의 "샘플하우스 디피 제품" 은 실제 있었던 과거 일이라 그대로 둔다.
+test('6차 오픈 행사 명칭은 모델하우스로 통일한다', () => {
+  const sixth = html.replace(/<p class="htl-d">[^<]*샘플하우스[^<]*<\/p>/g, '');
+  assert.ok(!sixth.includes('샘플하우스'), '6차 관련 문구에 샘플하우스가 남아 있으면 안 된다');
+  assert.ok(html.includes('모델하우스 오픈 전 계약 시'), '계약조건 이벤트 문구');
+  assert.ok(html.includes('2026년 11월 모델하우스 오픈'), '개요 일정');
+});
+
+// premium-05-center.jpg 는 마크힐센터가 아니라 참고용 호텔 피트니스 사진이었다.
+// "시공사 제공 자료" 라는 문구 옆에 두면 사실과 다르게 읽히므로 실제 계획 이미지로 교체했다.
+test('마크힐센터는 참고 사진이 아니라 시공사 계획 이미지를 쓴다', () => {
+  assert.ok(!html.includes('premium-05-center'), '참고용 호텔 피트니스 사진은 더 이상 쓰지 않는다');
+  for (const img of ['6cha-center-01', '6cha-center-02', '6cha-center-03', '6cha-center-04']) {
+    assert.ok(html.includes(`images/${img}.jpg`), `${img} 가 쓰여야 한다`);
+  }
+  const gallery = html.match(/<div class="gallery-group gallery-group-current[\s\S]*?<\/div>\s*<p class="gallery-note">[\s\S]*?<\/p>/)[0];
+  assert.match(gallery, /시공사가 제공한 계획 이미지/, '갤러리 각주에 계획 이미지임을 밝혀야 한다');
 });
 
 test('premium chapter lists real 6cha amenities', () => {
@@ -295,7 +318,7 @@ test('rooftop bento grid shows the 2026.09 revised plan, a mask-reveal title, an
   for (const img of [
     'images/6cha-pet-ground-01.jpg',
     'images/6cha-pet-ground-03.jpg',
-    'images/premium-05-center.jpg',
+    'images/6cha-center-01.jpg',
     'images/6cha-pet-ground-02.jpg',
   ]) {
     assert.ok(rooftopBlock.includes(`src="${img}"`), `expected ${img} in the rooftop bento grid`);
@@ -412,7 +435,7 @@ test('gallery chapter has a bento row per phase (1-5차) plus the existing 6차 
     assert.ok(galleryBlock.includes(`<b>${phase}</b>`), `missing bg-head label for ${phase}`);
   }
   assert.ok(galleryBlock.includes('6차 · 애월읍 하귀2리 · 공사중'));
-  assert.ok(galleryBlock.includes('공사중으로 실제 인테리어 사진이 아직 없으며'));
+  assert.ok(galleryBlock.includes('공사중으로 실제 인테리어 사진이 아직 없습니다'));
 });
 
 test('gallery bento has exactly 70 real photos (14 per phase, 1-5차) with cursor-driven auto-scroll and a click-to-enlarge modal', () => {
@@ -544,7 +567,7 @@ test('premium section has 6 accordion panels with real photos and history-accura
     'images/premium-02-kitchen.jpg',
     'images/premium-03-door.jpg',
     'images/premium-04-sprinkler.jpg',
-    'images/premium-05-center.jpg',
+    'images/6cha-center-04.jpg',
     'images/premium-06-bath.jpg',
   ]) {
     assert.ok(premiumBlock.includes(`src="${img}"`), `expected ${img} in the premium accordion`);
@@ -609,7 +632,9 @@ test('entry promo popup: 모델하우스 오픈이 메인, 아승공인중개사
   assert.ok(existsSync('images/promo-bg-4cha-living.jpg'), '팝업 배경 이미지 파일이 존재해야 함');
   assert.match(hero, /모델하우스/);
   assert.match(hero, /OPEN/);
-  assert.match(hero, /2026\. 10/);
+  // 오픈 시점은 2026.10 → 2026.11 로 변경됐다. 본문 일정(2026년 11월 모델하우스)과 어긋나면 안 된다.
+  assert.match(hero, /2026\. 11/);
+  assert.ok(html.includes('2026년 11월 모델하우스 오픈'), '팝업과 개요의 오픈 시점이 같아야 한다');
 
   // 혜택
   const head = popup.slice(popup.indexOf('<div class="promo-benefits-head">'), popup.indexOf('<ul class="promo-benefit-list">'));
