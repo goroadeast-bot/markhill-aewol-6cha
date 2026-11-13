@@ -1270,6 +1270,7 @@ main#pageContent { padding-top: 60px; }
 }
 .promo-when b { font-family: var(--font-mono); font-size: 14.5px; font-weight: 600; letter-spacing: 0.02em; }
 .promo-when span { font-size: 12px; color: rgba(248, 246, 242, 0.85); }
+.promo-when strong { font-weight: 700; color: var(--on-dark); }
 
 /* 2 — 한정 혜택 (강조 배너 + 점멸) */
 .promo-benefits { padding: 12px 24px 0; }

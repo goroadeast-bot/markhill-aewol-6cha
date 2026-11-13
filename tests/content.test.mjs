@@ -632,8 +632,10 @@ test('entry promo popup: 모델하우스 오픈이 메인, 아승공인중개사
   assert.ok(existsSync('images/promo-bg-4cha-living.jpg'), '팝업 배경 이미지 파일이 존재해야 함');
   assert.match(hero, /모델하우스/);
   assert.match(hero, /OPEN/);
-  // 오픈 시점은 2026.10 → 2026.11 로 변경됐다. 본문 일정(2026년 11월 모델하우스)과 어긋나면 안 된다.
-  assert.match(hero, /2026\. 11/);
+  // 오픈 시점은 2026.10 → 2026.11 → 2026.11.27 확정(방문 예약 필수). 본문 일정(2026년 11월 모델하우스)과 어긋나면 안 된다.
+  assert.match(hero, /<b>2026\. 11\. 27<\/b>/);
+  assert.match(hero, /방문 예약 필수/);
+  assert.ok(!/오픈 예정/.test(hero), '오픈일이 확정됐으므로 "오픈 예정" 표기는 없어야 한다');
   assert.ok(html.includes('2026년 11월 모델하우스 오픈'), '팝업과 개요의 오픈 시점이 같아야 한다');
 
   // 혜택
